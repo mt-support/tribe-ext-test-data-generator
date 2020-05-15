@@ -20,6 +20,7 @@
  */
 
 namespace Tribe\Extensions\Test_Data_Generator;
+use Tribe__Settings;
 
 /**
  * Class Hooks.
@@ -50,6 +51,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	protected function add_actions() {
 		add_action( 'tribe_load_text_domains', [ $this, 'load_text_domains' ] );
+		add_action( 'admin_menu', [ $this, 'action_add_menu' ], 15 );
 	}
 
 	/**
@@ -73,4 +75,12 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		// This will load `wp-content/languages/plugins` files first.
 		\Tribe__Main::instance()->load_text_domain( $domain, $mopath );
 	}
+
+    /**
+     * Add menu item.
+     * @since 1.0.0
+     */
+	public function action_add_menu() {
+	    $this->container->make( Page::class )->add_menu();
+    }
 }
