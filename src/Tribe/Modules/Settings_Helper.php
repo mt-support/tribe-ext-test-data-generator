@@ -1,5 +1,5 @@
 <?php
-namespace Tribe\Extensions\__TRIBE_NAMESPACE__;
+namespace Tribe\Extensions\Test_Data_Generator;
 
 use Tribe__Main;
 

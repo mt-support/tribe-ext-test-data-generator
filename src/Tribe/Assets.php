@@ -8,28 +8,28 @@
  *  tribe( 'assets' )->remove( 'asset-name' );
  * ```
  *
- * @since __TRIBE_VERSION__
+ * @since 1.0.0
  *
  * @package Tribe\Events\Virtual
  */
-namespace Tribe\Extensions\__TRIBE_NAMESPACE__;
+namespace Tribe\Extensions\Test_Data_Generator;
 
 /**
  * Register Assets.
  *
- * @since __TRIBE_VERSION__
+ * @since 1.0.0
  *
- * @package Tribe\Extensions\__TRIBE_NAMESPACE__
+ * @package Tribe\Extensions\Test_Data_Generator
  */
 class Assets extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 1.0.0
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
-		$this->container->singleton( 'extension.__TRIBE_SLUG_CLEAN__.assets', $this );
+		$this->container->singleton( 'extension.test_data_generator.assets', $this );
 
 		$plugin = tribe( Plugin::class );
 

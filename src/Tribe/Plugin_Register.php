@@ -2,21 +2,21 @@
 /**
  * Handles the Extension plugin dependency manifest registration.
  *
- * @since __TRIBE_VERSION__
+ * @since 1.0.0
  *
- * @package Tribe\Extensions\__TRIBE_NAMESPACE__
+ * @package Tribe\Extensions\Test_Data_Generator
  */
 
-namespace Tribe\Extensions\__TRIBE_NAMESPACE__;
+namespace Tribe\Extensions\Test_Data_Generator;
 
 use Tribe__Abstract_Plugin_Register as Abstract_Plugin_Register;
 
 /**
  * Class Plugin_Register.
  *
- * @since   __TRIBE_VERSION__
+ * @since   1.0.0
  *
- * @package Tribe\Extensions\__TRIBE_NAMESPACE__
+ * @package Tribe\Extensions\Test_Data_Generator
  *
  * @see Tribe__Abstract_Plugin_Register For the plugin dependency manifest registration.
  */

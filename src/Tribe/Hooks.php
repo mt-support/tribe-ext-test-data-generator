@@ -4,40 +4,40 @@
  *
  * To remove a filter:
  * ```php
- *  remove_filter( 'some_filter', [ tribe( Tribe\Extensions\__TRIBE_NAMESPACE__\Hooks::class ), 'some_filtering_method' ] );
+ *  remove_filter( 'some_filter', [ tribe( Tribe\Extensions\Test_Data_Generator\Hooks::class ), 'some_filtering_method' ] );
  *  remove_filter( 'some_filter', [ tribe( 'events-virtual.hooks' ), 'some_filtering_method' ] );
  * ```
  *
  * To remove an action:
  * ```php
- *  remove_action( 'some_action', [ tribe( Tribe\Extensions\__TRIBE_NAMESPACE__\Hooks::class ), 'some_method' ] );
+ *  remove_action( 'some_action', [ tribe( Tribe\Extensions\Test_Data_Generator\Hooks::class ), 'some_method' ] );
  *  remove_action( 'some_action', [ tribe( 'events-virtual.hooks' ), 'some_method' ] );
  * ```
  *
- * @since   __TRIBE_VERSION__
+ * @since   1.0.0
  *
- * @package Tribe\Extensions\__TRIBE_NAMESPACE__;
+ * @package Tribe\Extensions\Test_Data_Generator;
  */
 
-namespace Tribe\Extensions\__TRIBE_NAMESPACE__;
+namespace Tribe\Extensions\Test_Data_Generator;
 
 /**
  * Class Hooks.
  *
- * @since   __TRIBE_VERSION__
+ * @since   1.0.0
  *
- * @package Tribe\Extensions\__TRIBE_NAMESPACE__;
+ * @package Tribe\Extensions\Test_Data_Generator;
  */
 class Hooks extends \tad_DI52_ServiceProvider {
 
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 1.0.0
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
-		$this->container->singleton( 'extension.__TRIBE_SLUG_CLEAN__.hooks', $this );
+		$this->container->singleton( 'extension.test_data_generator.hooks', $this );
 
 		$this->add_actions();
 		$this->add_filters();
@@ -46,7 +46,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions required by the plugin.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 1.0.0
 	 */
 	protected function add_actions() {
 		add_action( 'tribe_load_text_domains', [ $this, 'load_text_domains' ] );
@@ -55,7 +55,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters required by the plugin.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 1.0.0
 	 */
 	protected function add_filters() {
 
@@ -64,11 +64,11 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Load text domain for localization of the plugin.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 1.0.0
 	 */
 	public function load_text_domains() {
 		$mopath = tribe( Plugin::class )->plugin_dir . 'lang/';
-		$domain = '__TRIBE_SLUG__';
+		$domain = 'test-data-generator';
 
 		// This will load `wp-content/languages/plugins` files first.
 		\Tribe__Main::instance()->load_text_domain( $domain, $mopath );
