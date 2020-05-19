@@ -49,6 +49,8 @@ function tribe_extension_test_data_generator() {
 		'test-data-generator'
 	);
 
+    require_once __DIR__ . '/vendor/autoload.php';
+
 	tribe_register_provider( '\Tribe\Extensions\Test_Data_Generator\Plugin' );
 }
 

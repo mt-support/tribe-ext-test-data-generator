@@ -52,6 +52,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	protected function add_actions() {
 		add_action( 'tribe_load_text_domains', [ $this, 'load_text_domains' ] );
 		add_action( 'admin_menu', [ $this, 'action_add_menu' ], 15 );
+		add_action( 'admin_init', [ $this, 'on_admin_init' ], 15 );
 	}
 
 	/**
@@ -82,5 +83,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
      */
 	public function action_add_menu() {
 	    $this->container->make( Page::class )->add_menu();
+    }
+
+    /**
+     * Executed on Admin Init.
+     *
+     * @since 1.0.0
+     */
+    public function on_admin_init() {
+        $page_obj = $this->container->make( Page::class );
+        add_action(
+            'load-' . $page_obj->get_menu_hook(),
+            [ $page_obj, 'parse_request' ]
+        );
     }
 }

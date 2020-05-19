@@ -15,6 +15,15 @@ class Page {
     protected $template;
 
     /**
+     * Nonce key for generating Test Data.
+     *
+     * @since 1.0.0
+     *
+     * @var string
+     */
+    public static $nonce_action_key = 'tribe-ext-test-data-generator';
+
+    /**
      * Gets the instance of template class set for the metabox.
      *
      * @since 1.0.0
@@ -91,7 +100,36 @@ class Page {
      * @since 1.0.0
      */
     public function render() {
-        $args = [];
+        $args = [
+            'nonce_action_key' => static::$nonce_action_key,
+        ];
         $this->get_template()->template( 'page', $args );
+    }
+
+    /**
+     *
+     */
+    public function parse_request() {
+        if ( empty( $_POST ) ) {
+            return;
+        }
+
+        $redirect_url = tribe_get_request_var( '_wp_http_referer', admin_url( 'edit.php?post_type=tribe_events&page=test-data-generator' ) );
+        $nonce = tribe_get_request_var( '_wpnonce' );
+        if ( ! wp_verify_nonce( $nonce, static::$nonce_action_key ) ) {
+            $redirect_url = add_query_arg( [ 'tribe_error' => 1 ] );
+            wp_redirect( $redirect_url );
+            exit;
+        }
+
+        $organizers = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'organizers' ], [] );
+        if ( ! empty( $organizers['quantity'] ) ) {
+            $created_organizers = tribe( Generator\Organizer::class )->create( $organizers['quantity'], $organizers );
+            if ( ! empty( $created_organizers ) ) {
+                $redirect_url = add_query_arg( [ 'tribe_success' => 1 ] );
+                wp_redirect( $redirect_url );
+                exit;
+            }
+        }
     }
 }

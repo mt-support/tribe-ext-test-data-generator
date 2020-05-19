@@ -1,0 +1,23 @@
+{
+  "name": "mt-support/tribe-ext-test-data-generator",
+  "description": "Test Data Generator for TEC",
+  "type": "wordpress-plugin",
+  "homepage": "http://tri.be/",
+  "license": "GPL-2.0",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "config": {
+    "preferred-install": "dist",
+    "platform": {
+      "php": "7.0.33"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Tribe\\Extensions\\Test_Data_Generator\\": "src/Tribe"
+    }
+  },
+  "require": {
+    "fzaninotto/faker": "^1.9"
+  }
+}
