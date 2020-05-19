@@ -107,7 +107,9 @@ class Page {
     }
 
     /**
+     *Parse POST request from Admin menu
      *
+     * @since 1.0.0
      */
     public function parse_request() {
         if ( empty( $_POST ) ) {
