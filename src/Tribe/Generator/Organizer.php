@@ -32,15 +32,15 @@ class Organizer {
         $faker = Factory::create();
 
         $firstname = $faker->firstName;
-        $lastname = rand( 0,11 ) < 10 ? $faker->lastName : $faker->lastName . '-' . $faker->lastName;
-        $website = rand( 0,1 ) ? tribe_strtolower( $lastname ) . '.com' : tribe_strtolower( $lastname ) . '.net';
+        $lastname = rand( 0, 11 ) < 10 ? $faker->lastName : $faker->lastName . '-' . $faker->lastName;
+        $website = rand( 0, 1 ) ? tribe_strtolower( $lastname ) . '.com' : tribe_strtolower( $lastname ) . '.net';
         $fullname = $firstname . ' ' . $lastname;
         $email = tribe_strtolower( $firstname ) . '@' . $website;
         $phone = $faker->phoneNumber;
         $description =
             $fullname . ' crafts event experiences that are more upbeat and modern than some other tenured companies. '
             . 'The team at ' . $lastname . ' & Co is a “creative-led experiential” event company that’s worked with luxury,'
-            . ' travel, retail, technology, and other brand verticals for over ' . rand( 8,20 ) . ' years.';
+            . ' travel, retail, technology, and other brand verticals for over ' . rand( 8, 20 ) . ' years.';
 
         $data = [
             'organizer' => $fullname,
