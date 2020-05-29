@@ -33,7 +33,7 @@ class Organizer {
 
         $firstname = $faker->firstName;
         $lastname = rand( 0, 11 ) < 10 ? $faker->lastName : $faker->lastName . '-' . $faker->lastName;
-        $website = rand( 0, 1 ) ? tribe_strtolower( $lastname ) . '.com' : tribe_strtolower( $lastname ) . '.net';
+        $website = tribe_strtolower( $lastname ) . '-qa.tri.be';
         $fullname = $firstname . ' ' . $lastname;
         $email = tribe_strtolower( $firstname ) . '@' . $website;
         $phone = $faker->phoneNumber;
