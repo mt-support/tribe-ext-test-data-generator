@@ -126,11 +126,15 @@ class Page {
 
         $organizers = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'organizers' ], [] );
         $venues = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'venues' ], [] );
+        $events = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'events' ], [] );
         if ( ! empty( $organizers['quantity'] ) ) {
             $created_organizers = tribe( Generator\Organizer::class )->create( $organizers['quantity'], $organizers );
         }
         if ( ! empty( $venues['quantity'] ) ) {
             $created_venues = tribe( Generator\Venue::class )->create( $venues['quantity'], $venues );
+        }
+        if ( ! empty( $events['quantity'] ) ) {
+            $created_venues = tribe( Generator\Event::class )->create( $events['quantity'], $events );
         }
 
         if ( ! empty( $created_organizers || ! empty( $created_venues ) ) ) {
