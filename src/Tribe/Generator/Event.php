@@ -69,7 +69,7 @@ class Event {
      */
     public function generate_event_date_data() {
         $faker = Factory::create();
-        $all_day = $faker->optional(0.01, 'yes')->randomElement(['no']);
+        $all_day = $faker->optional(0.95, 'yes')->randomElement(['no']);
         if ( $all_day == 'no' ) {
             $start = $faker->dateTimeBetween('-1 month', '+1 month');
             $start_formatted = rand( 0, 1 ) ? $start->format( 'Y-m-d H:00' ) : $start->format( 'Y-m-d H:30' );
