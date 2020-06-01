@@ -59,3 +59,46 @@
     </table>
     <?php submit_button( 'Generate Data' ); ?>
 </form>
+
+<div style="background-color: whitesmoke; padding-left: 30px; padding-top: 10px; margin-right: 80px">
+    <h2>Handy Tools</h2>
+    <form method="post" action="" novalidate="novalidate">
+        <?php wp_nonce_field( $nonce_action_key ); ?>
+        <table class="form-table" role="presentation">
+            <tbody>
+            <tr>
+                <th scope="row">
+                    <label>Upload </label>
+                    <select id='numImages' name='tribe-ext-test-data-generator[uploads][quantity]'>
+                    <option value='0'>None</option>
+                    <option value='10'>Few</option>
+                    <option value='100'>Bunch</option>
+                    </select>
+                    <label for="numImages">Random Images</label>
+                </th>
+                <td style="vertical-align: bottom">
+                    <?php submit_button( 'Upload Images' ); ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <form method="post" action="" novalidate="novalidate">
+        <?php wp_nonce_field( $nonce_action_key ); ?>
+        <table class="form-table" role="presentation">
+            <tbody>
+            <tr>
+                <th scope="row">
+                    <h4>Clear Events Data</h4>
+                    <input type="checkbox" id='clearEventsData' name='tribe-ext-test-data-generator[clearEvents]'/>
+                    <label for="clearEventsData" style="color: crimson"><strong>DELETE all Events, Venues and Organizers from this site.</strong></label>
+                </th>
+                <td style="vertical-align: bottom">
+                    <?php submit_button( 'DELETE Data' ); ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>

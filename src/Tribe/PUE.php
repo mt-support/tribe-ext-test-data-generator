@@ -76,7 +76,7 @@ class PUE extends \tad_DI52_ServiceProvider {
 		 * @param bool   $pue_enabled Whether Events Virtual PUE component should manage the plugin updates or not.
 		 * @param string $pue_slug    The Events Virtual plugin slug used to register it in the Plugin Update Engine.
 		 */
-		$pue_enabled = apply_filters( 'tribe_enable_pue', true, static::get_slug() );
+		$pue_enabled = apply_filters( 'tribe_enable_pue', false, static::get_slug() );
 
 		if ( ! ( $pue_enabled && class_exists( 'Tribe__PUE__Checker' ) ) ) {
 			return;
