@@ -37,22 +37,16 @@ class Utils {
     public function clear_all( $clear_flag ) {
         if( $clear_flag == 'on' ) {
             $args = [ 'posts_per_page' => -1 ];
-            $venues_ids = tribe_venues()->by_args( $args )->get_ids();
-            $organizers_ids = tribe_organizers()->by_args( $args )->get_ids();
-            $events_ids = tribe_events()->by_args( $args )->get_ids();
+            $venues_ids = tribe_venues()->by_args( $args )->fields( 'id' )->first();
+            $organizers_ids = tribe_organizers()->by_args( $args )->fields( 'id' )->first();
+            $events_ids = tribe_events()->by_args( $args )->fields( 'id' )->first();
             if ( ! empty( $venues_ids ) ) {
-                foreach ( $venues_ids as $id ) {
-                    tribe_venues()->delete()->delete( $id );
-                }
+                tribe_venues()->delete();
             } if ( ! empty( $organizers_ids ) ) {
-                foreach ( $organizers_ids as $id ) {
-                    tribe_organizers()->delete()->delete( $id );
-                }
+                tribe_organizers()->delete();
             } if ( ! empty( $events_ids ) ) {
-                foreach ( $events_ids as $id ) {
-                    tribe_events()->delete()->delete( $id );
-                }
-            }exit;
+                tribe_events()->delete();
+            }
         }
     }
 }
