@@ -158,7 +158,7 @@ class Event {
 
         switch ( $faker->numberBetween( 1, 4 ) ) {
             case 1:
-                $title = title_case( $faker->bs );
+                $title = ucwords( $faker->bs );
                 break;
             case 2:
                 $title = $faker->catchPhrase;
