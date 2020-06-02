@@ -36,15 +36,13 @@ class Utils {
      */
     public function clear_all( $clear_flag ) {
         if( $clear_flag == 'on' ) {
-            $args = [ 'posts_per_page' => -1 ];
-            $venues_ids = tribe_venues()->by_args( $args )->fields( 'id' )->first();
-            $organizers_ids = tribe_organizers()->by_args( $args )->fields( 'id' )->first();
-            $events_ids = tribe_events()->by_args( $args )->fields( 'id' )->first();
-            if ( ! empty( $venues_ids ) ) {
+            while( tribe_venues()->found() ) {
                 tribe_venues()->delete();
-            } if ( ! empty( $organizers_ids ) ) {
+            }
+            while( tribe_organizers()->found() ) {
                 tribe_organizers()->delete();
-            } if ( ! empty( $events_ids ) ) {
+            }
+            while( tribe_events()->found() ) {
                 tribe_events()->delete();
             }
         }
