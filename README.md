@@ -12,7 +12,7 @@ You can access all the available features in `Events > Test Data`.
 
 1. **Create Venues:** you can automatically generate 10, 100, 1,000 or 10,000 venues for your site.
 1. **Create Organizers:** you can automatically generate 10, 100, 1,000 or 10,000 organizers for your site.
-1. **Create Events:** you can automatically generate 10, 100, 1,000 or 10,000 events, pulling from your pre-existing Venues, Organizers and uploaded images in your Media Library. 
+1. **Create Events:** you can automatically generate 10, 100, 1,000 or 10,000 events, pulling from your pre-existing Venues, Organizers and uploaded images in your Media Library. Each event's date will be randomly selected, between `-1 month` and `+1 month` from `now`.
 
 PLEASE NOTE that the amount of Venues, Organizers and Events you can create might be limited by your site's server setup (Available memory, timeout, processing power, etc.)
 
