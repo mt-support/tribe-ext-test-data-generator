@@ -173,7 +173,7 @@ class Page {
                 'tribe-ext-test-data-generator'
             ),
             esc_html__(
-                "Test data generated successfully.",
+                "Your request was processed successfully.",
                 'tribe-ext-test-data-generator'
             )
         );
@@ -194,7 +194,7 @@ class Page {
                 'tribe-ext-test-data-generator'
             ),
             esc_html__(
-                "There's been an error and your test data couldn't be generated. Please try again.",
+                "There's been an error and your request couldn't be completed. Please try again.",
                 'tribe-ext-test-data-generator'
             )
         );

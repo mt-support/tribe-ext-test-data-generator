@@ -27,6 +27,7 @@ class Utils {
      *
      * @since 1.0.0
      * @param $clear_flag
+     * @return boolean
      */
     public function clear_generated( $clear_flag ) {
         if( $clear_flag == 'on' ) {
@@ -40,6 +41,7 @@ class Utils {
                 tribe_events()->by( 'meta_like', 'tribe_test_data_gen' )->delete();
             }
         }
+        return true;
     }
 
     /**
@@ -47,6 +49,7 @@ class Utils {
      *
      * @since 1.0.0
      * @param $clear_flag
+     * @return boolean
      */
     public function clear_all( $clear_flag ) {
         if( $clear_flag == 'on' ) {
@@ -60,5 +63,6 @@ class Utils {
                 tribe_events()->delete();
             }
         }
+        return true;
     }
 }
