@@ -54,23 +54,29 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'admin_menu', [ $this, 'action_add_menu' ], 15 );
 		add_action( 'admin_init', [ $this, 'on_admin_init' ], 15 );
         tribe_notice(
-            'tribe-ext-test-data-generator',
+            'tribe-ext-test-data-generator-success',
             [
                 $this->container->make( Page::class ),
                 'render_success_notice'
             ],
-            [ 'type' => 'success' ],
+            [
+                'type' => 'success',
+                'action' => 'tribe_ext_test_data_generator_notices'
+            ],
             function() {
                 return tribe_is_truthy( tribe_get_request_var( 'tribe_success' ) );
             }
         );
         tribe_notice(
-            'tribe-ext-test-data-generator',
+            'tribe-ext-test-data-generator-error',
             [
                 $this->container->make( Page::class ),
                 'render_error_notice'
             ],
-            [ 'type' => 'error' ],
+            [
+                'type' => 'error',
+                'action' => 'tribe_ext_test_data_generator_notices'
+            ],
             function() {
                 return tribe_is_truthy( tribe_get_request_var( 'tribe_error' ) );
             }
