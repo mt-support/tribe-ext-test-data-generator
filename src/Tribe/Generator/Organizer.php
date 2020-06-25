@@ -48,7 +48,8 @@ class Organizer {
             'website' => 'https://' . $website,
             'email' => $email,
             'post_content' => $description,
-            'post_status' => 'publish'
+            'post_status' => 'publish',
+            'tribe_test_data_gen'=> '1'
         ];
 
         return $data;

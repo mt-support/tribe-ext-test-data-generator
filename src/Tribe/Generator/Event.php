@@ -64,7 +64,8 @@ class Event {
 			'featured'           => '0',
             'post_content'       => $event_description,
             '_thumbnail_id'      => $featured_image,
-            'post_status'        => 'publish'
+            'post_status'        => 'publish',
+            'tribe_test_data_gen'=> '1'
             ];
     }
 

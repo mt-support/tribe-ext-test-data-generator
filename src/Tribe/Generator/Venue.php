@@ -50,7 +50,8 @@ class Venue {
             'post_content' => $description,
             '_VenueShowMap'       => '1',
             '_VenueShowMapLink'   => '1',
-            'post_status' => 'publish'
+            'post_status' => 'publish',
+            'tribe_test_data_gen'=> '1'
             ];
 
         return $data;
