@@ -153,4 +153,46 @@ class Page {
             exit;
         }
     }
+
+    /**
+     * Render success notice in template.
+     *
+     * @since 1.0.0
+     *
+     * @return string
+     */
+    public function render_success_notice() {
+        return sprintf(
+            '<p><strong>%1$s</strong> %2$s</p>',
+            esc_html__(
+                "Woohoo!",
+                'tribe-ext-test-data-generator'
+            ),
+            esc_html__(
+                "Test data generated successfully.",
+                'tribe-ext-test-data-generator'
+            )
+        );
+    }
+
+    /**
+     * Render error notice in template.
+     *
+     * @since 1.0.0
+     *
+     * @return string
+     */
+    public function render_error_notice() {
+        return sprintf(
+            '<p><strong>%1$s</strong> %2$s</p>',
+            esc_html__(
+                "Oh No!",
+                'tribe-ext-test-data-generator'
+            ),
+            esc_html__(
+                "There's been an error and your test data couldn't be generated. Please try again.",
+                'tribe-ext-test-data-generator'
+            )
+        );
+    }
 }

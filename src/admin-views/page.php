@@ -8,6 +8,7 @@
  */
 ?>
 <h1><?php echo get_admin_page_title() ?></h1>
+<?php tribe_the_notices() ?>
 <form method="post" action="" novalidate="novalidate">
     <?php wp_nonce_field( $nonce_action_key ); ?>
     <table class="form-table" role="presentation">
