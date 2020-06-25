@@ -16,8 +16,10 @@ class Event {
      * @throws \Tribe__Repository__Usage_Error
      */
     public function create( $quantity = 1, array $args = [] ) {
+        $fromDate = empty( $args['fromDate'] ) ? '-1 month' : $args['fromDate'];
+        $toDate = empty( $args['toDate'] ) ? '+1 month' : $args['toDate'];
         for ( $i = 1; $i <= $quantity; $i++ ) {
-            $events[] = tribe_events()->set_args( $this->random_event_data() )->create();
+            $events[] = tribe_events()->set_args( $this->random_event_data( $fromDate, $toDate) )->create();
         }
         return $events;
     }
@@ -25,11 +27,13 @@ class Event {
     /**
      * Generate pseudo-randomized Event data.
      *
+     * @param string $fromDate
+     * @param string $toDate
      * @since 1.0.0
      * @return string[]
      */
-    public function random_event_data() {
-        $event_date = $this->generate_event_date_data();
+    public function random_event_data( $fromDate, $toDate ) {
+        $event_date = $this->generate_event_date_data( $fromDate, $toDate );
         $venue_id = $this->get_random_venue();
         $organizer_id = $this->get_random_organizer();
         $timezone = $this->determine_timezone($venue_id);
@@ -67,14 +71,16 @@ class Event {
     /**
      * Generate event dates and times.
      *
+     * @param string $fromDate
+     * @param string $toDate
      * @since 1.0.0
      * @return array
      */
-    public function generate_event_date_data() {
+    public function generate_event_date_data( $fromDate, $toDate ) {
         $faker = Factory::create();
         $all_day = $faker->optional(0.95, 'yes')->randomElement(['no']);
         if ( $all_day == 'no' ) {
-            $start = $faker->dateTimeBetween('-1 month', '+1 month');
+            $start = $faker->dateTimeBetween( $fromDate, $toDate );
             $start_formatted = rand( 0, 1 ) ? $start->format( 'Y-m-d H:00' ) : $start->format( 'Y-m-d H:30' );
             $end = rand( 0, 1 ) ? $start->add( new DateInterval( 'PT2H' ) ) : $start->add( new DateInterval( 'PT3H' ) );
             $end_formatted = rand( 0, 1 ) ? $end->format( 'Y-m-d H:00' ) : $end->format( 'Y-m-d H:30' );
@@ -184,13 +190,16 @@ class Event {
     public function generate_event_description( $event_title, $organizer_id, $venue_id ) {
         $faker = Factory::create();
         $venue = tribe_venues()->by( 'ID', $venue_id )->first();
-        $venue_meta = get_post_meta( $venue_id );
+        $venue_name = empty( $venue ) ? 'The Venue' : $venue->post_title;
+        $venue_meta_city = get_post_meta( $venue_id )['_VenueCity'][0];
+        $venue_city = empty( $venue_meta_city ) ? 'your city' : $venue_meta_city;
         $organizer = tribe_organizers()->by( 'ID', $organizer_id )->first();
+        $organizer_name = empty( $organizer ) ? 'a Premium Organizer' : $organizer->post_title;
         gc_collect_cycles();
 
         $description =
-            '<p>' . $venue->post_title . ' hosts ' . $event_title . ', an event by ' . $organizer->post_title . ' coming to '
-            . $venue_meta['_VenueCity'][0] . '! </p><p>' . $faker->realText( $faker->numberBetween( 200, 300 ) ) . '</p>';
+            '<p>' . $venue_name . ' hosts ' . $event_title . ', an event by ' . $organizer_name . ' coming to '
+            . $venue_city . '! </p><p>' . $faker->realText( $faker->numberBetween( 200, 300 ) ) . '</p>';
 
         return $description;
     }

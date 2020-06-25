@@ -56,6 +56,50 @@
                 </select>
             </td>
         </tr>
+        <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+            <td colspan="2">
+                <label for="eventFromDate">Create events between </label>
+                <select id='eventFromDate' name='tribe-ext-test-data-generator[events][fromDate]'>
+                    <option value='now'>Now</option>
+                    <option value='-1 week'>1 Week ago</option>
+                    <option value='-2 weeks'>2 Weeks ago</option>
+                    <option value='-3 weeks'>3 Weeks ago</option>
+                    <option value='-1 month'>1 Month ago</option>
+                    <option value='-2 months'>2 Months ago</option>
+                    <option value='-3 months'>3 Months ago</option>
+                    <option value='-4 months'>4 Months ago</option>
+                    <option value='-5 months'>5 Months ago</option>
+                    <option value='-6 months'>6 Months ago</option>
+                    <option value='-7 months'>7 Months ago</option>
+                    <option value='-8 months'>8 Months ago</option>
+                    <option value='-9 months'>9 Months ago</option>
+                    <option value='-10 months'>10 Months ago</option>
+                    <option value='-11 months'>11 Months ago</option>
+                    <option value='-1 year'>1 Year ago</option>
+                    <option value='-2 years'>2 Years ago</option>
+                </select>
+                <label for="eventToDate"> and </label>
+                <select id='eventToDate' name='tribe-ext-test-data-generator[events][toDate]'>
+                    <option value='+1 day'>Tomorrow</option>
+                    <option value='+1 week'>1 Week ahead</option>
+                    <option value='+2 weeks'>2 Weeks ahead</option>
+                    <option value='+3 weeks'>3 Weeks ahead</option>
+                    <option value='+1 month'>1 Month ahead</option>
+                    <option value='+2 months'>2 Months ahead</option>
+                    <option value='+3 months'>3 Months ahead</option>
+                    <option value='+4 months'>4 Months ahead</option>
+                    <option value='+5 months'>5 Months ahead</option>
+                    <option value='+6 months'>6 Months ahead</option>
+                    <option value='+7 months'>7 Months ahead</option>
+                    <option value='+8 months'>8 Months ahead</option>
+                    <option value='+9 months'>9 Months ahead</option>
+                    <option value='+10 months'>10 Months ahead</option>
+                    <option value='+11 months'>11 Months ahead</option>
+                    <option value='+1 year'>1 Year ahead</option>
+                    <option value='+2 years'>2 Years head</option>
+                </select>
+            </td>
+        </tr>
         </tbody>
     </table>
     <?php submit_button( 'Generate Data' ); ?>
