@@ -3,6 +3,7 @@ namespace Tribe\Extensions\Test_Data_Generator\Generator;
 
 use DateInterval;
 use Faker\Factory;
+use Tribe\Events\Pro\Rewrite\Provider;
 use WP_Query;
 
 class Event {
@@ -262,6 +263,13 @@ class Event {
      * @param $event
      */
     public function add_ticket( $event ) {
+        $provider = \Tribe__Tickets__Tickets::get_event_ticket_provider( $event->ID );
+
+        // If we don't have a paid provider as default, bail.
+        if ( Tribe__Tickets__RSVP::class === $provider->class_name ) {
+            return;
+        }
+
         $faker      = Factory::create();
         $price_list = [ 9.99, 15, 25, 35, 49.99, 75, 150 ];
         $type_list  = [ 'Standard', 'General', 'Basic', 'Student' ];
@@ -278,6 +286,6 @@ class Event {
             ],
         ];
 
-        tribe( 'tickets.commerce.paypal' )->ticket_add( $event->ID, $data );
+        $provider->ticket_add( $event->ID, $data );
     }
 }
