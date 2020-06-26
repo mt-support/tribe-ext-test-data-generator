@@ -108,7 +108,6 @@
 				<label for="addRSVP">Add RSVP to generated events.</label>
 			</td>
 		</tr>
-		<?php var_dump( Tribe__Tickets__Tickets::modules() ); ?>
 		<?php endif; ?>
 		<?php
 		$providers = Tribe__Tickets__Tickets::modules();
