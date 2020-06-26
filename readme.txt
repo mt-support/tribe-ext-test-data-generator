@@ -1,15 +1,13 @@
 === The Events Calendar Extension: Test Data Generator ===
-Contributors: ModernTribe
+Contributors: ModernTribe, aguseo, bordoni, Camwyn, lirianojoel, lucatume
 Donate link: http://m.tri.be/29
 Tags: events, calendar
-Requires at least: 4.9
-Tested up to: 5.4.1
+Requires at least: 4.9.14
+Tested up to: 5.4.2
 Requires PHP: 5.6
 Stable tag: 1.0.0
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-
-
 
 == Description ==
 
@@ -35,6 +33,14 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
-= [1.0.0] 2020-06-02 =
+= [1.0.0] 2020-06-26 =
 
-* Initial release
+* Feature - Automatically generate test Organizers.
+* Feature - Automatically generate test Venues.
+* Feature - Automatically generate test Events.
+* Feature - Ability to select date range for test Events creation.
+* Feature - Ability to add RSVP to generated test Events.
+* Feature - Ability to add Ticket to generated test Events.
+* Feature - Upload randomly selected images from Picsum.photos into your WP site.
+* Feature - Delete only automatically generated test Organizers, Venues and Events.
+* Feature - Delete ALL existing Organizers, Venues and Events.
