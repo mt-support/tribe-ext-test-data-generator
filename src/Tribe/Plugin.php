@@ -82,7 +82,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		}
 
 		// Start binds.
-        $this->container->singleton( Page::class, Page::class, [ 'set_template' ] );
+		$this->container->singleton( Page::class, Page::class, [ 'set_template' ] );
 
 		// End binds.
 
