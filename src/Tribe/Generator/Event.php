@@ -19,7 +19,17 @@ class Event {
         $fromDate = empty( $args['fromDate'] ) ? '-1 month' : $args['fromDate'];
         $toDate = empty( $args['toDate'] ) ? '+1 month' : $args['toDate'];
         for ( $i = 1; $i <= $quantity; $i++ ) {
-            $events[] = tribe_events()->set_args( $this->random_event_data( $fromDate, $toDate) )->create();
+            $event = tribe_events()->set_args( $this->random_event_data( $fromDate, $toDate) )->create();
+
+            if( ! empty( $args['rsvp'] ) ) {
+                $this->add_rsvp( $event );
+            }
+
+            if( ! empty( $args['ticket'] ) ) {
+                $this->add_ticket( $event );
+            }
+
+            $events[] = $event;
         }
         return $events;
     }
@@ -220,5 +230,51 @@ class Event {
         $image_id = $faker->randomElement( $attachment_query->get_posts() );
 
         return $image_id;
+    }
+
+    /**
+     * Creates RSVP for Event.
+     *
+     * @since 1.0.0
+     *
+     * @param $event
+     */
+    public function add_rsvp( $event ) {
+        $data =
+            [
+                'ticket_name'             => 'Free Entry',
+                'ticket_description'      => 'RSVP to join us!',
+                'ticket_show_description' => 'yes',
+                'Tribe__Tickets__RSVP_capacity' => '25'
+            ];
+        $rsvp = tribe( 'tickets.rsvp' )->ticket_add( $event->ID, $data );
+        tribe_tickets_update_capacity( $rsvp, 25 );
+    }
+
+    /**
+     * Creates Ticket for Event.
+     *
+     * @since 1.0.0
+     *
+     * @param $event
+     */
+    public function add_ticket( $event ) {
+        $faker = Factory::create();
+        $price_list = [ 9.99, 15, 25, 35, 49.99, 75, 150 ];
+        $type_list = [ 'Standard', 'General', 'Basic', 'Student' ];
+        $price = $faker->randomElement( $price_list );
+        $type = ( $price > 70 ) ? 'VIP' : $faker->randomElement( $type_list );
+        $data =
+            [
+                'ticket_name'             => $type,
+                'ticket_price'            => $price,
+                'ticket_description'      => 'Ticket for ' . $type . ' access to the event.',
+                'ticket_show_description' => 'yes',
+                'capacity'                => 25,
+                'stock'                   => 25
+            ];
+        $ticket = tribe( 'tickets.commerce.paypal' )->ticket_add( $event->ID, $data );
+        tribe( 'tickets.commerce.paypal' )->save_ticket( $event->ID, $ticket, $data );
+        //tribe_tickets_update_capacity( $ticket, 25 );
     }
 }

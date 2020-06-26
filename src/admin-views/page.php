@@ -100,6 +100,22 @@
                 </select>
             </td>
         </tr>
+        <?php if( class_exists( 'Tribe__Tickets__Main' ) ) : ?>
+        <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+            <td colspan="2">
+                <input type="checkbox" id='addRSVP' name='tribe-ext-test-data-generator[events][rsvp]'/>
+                <label for="addRSVP">Add RSVP to generated events.</label>
+            </td>
+        </tr>
+        <?php endif; ?>
+        <?php if( class_exists( 'Tribe__Tickets__Commerce__PayPal__Main' ) ) : ?>
+            <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+                <td colspan="2">
+                    <input type="checkbox" id='addTicket' name='tribe-ext-test-data-generator[events][ticket]'/>
+                    <label for="addTicket">Add Ticket to generated events.</label>
+                </td>
+            </tr>
+        <?php endif; ?>
         </tbody>
     </table>
     <?php submit_button( 'Generate Data' ); ?>
