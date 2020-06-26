@@ -4,6 +4,7 @@ namespace Tribe\Extensions\Test_Data_Generator\Generator;
 use DateInterval;
 use Faker\Factory;
 use Tribe\Events\Pro\Rewrite\Provider;
+use Tribe__Tickets__RSVP;
 use WP_Query;
 
 class Event {
@@ -263,6 +264,11 @@ class Event {
 	 */
 	public function add_ticket( $event ) {
 		$provider = \Tribe__Tickets__Tickets::get_event_ticket_provider( $event->ID );
+
+        // Prior to 4.12.2, ET will return a string rather than an instance.
+        if ( is_string( $provider ) ) {
+            $provider = new $provider;
+        }
 
 		// If we don't have a paid provider as default, bail.
 		if ( Tribe__Tickets__RSVP::class === $provider->class_name ) {
