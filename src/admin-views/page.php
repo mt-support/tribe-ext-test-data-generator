@@ -6,6 +6,7 @@
  *
  * @version 1.0.0
  */
+
 ?>
 <h1><?php echo get_admin_page_title() ?></h1>
 <?php do_action( 'tribe_ext_test_data_generator_notices' ) ?>
@@ -107,8 +108,12 @@
 				<label for="addRSVP">Add RSVP to generated events.</label>
 			</td>
 		</tr>
+		<?php var_dump( Tribe__Tickets__Tickets::modules() ); ?>
 		<?php endif; ?>
-		<?php if( 0 < array_diff_key( Tribe__Tickets__Tickets::modules(), array( 'Tribe__Tickets__RSVP' => true ) ) ) : ?>
+		<?php
+		$providers = Tribe__Tickets__Tickets::modules();
+		unset( $providers[ 'Tribe__Tickets__RSVP' ] );
+		if ( 0 < count( $providers ) ) : ?>
 			<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
 				<td colspan="2">
 					<input type="checkbox" id='addTicket' name='tribe-ext-test-data-generator[events][ticket]'/>
