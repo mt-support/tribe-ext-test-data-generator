@@ -240,15 +240,18 @@ class Event {
      * @param $event
      */
     public function add_rsvp( $event ) {
-        $data =
-            [
-                'ticket_name'             => 'Free Entry',
-                'ticket_description'      => 'RSVP to join us!',
-                'ticket_show_description' => 'yes',
-                'Tribe__Tickets__RSVP_capacity' => '25'
-            ];
-        $rsvp = tribe( 'tickets.rsvp' )->ticket_add( $event->ID, $data );
-        tribe_tickets_update_capacity( $rsvp, 25 );
+        $data = [
+            'ticket_name'             => 'Free Entry',
+            'ticket_description'      => 'RSVP to join us!',
+            'ticket_show_description' => 'yes',
+            'tribe-ticket'            => [
+                'capacity'                => '25',
+                'stock'                   => '25'
+            ],
+        ];
+
+        tribe( 'tickets.rsvp' )->ticket_add( $event->ID, $data );
+
     }
 
     /**
@@ -259,22 +262,22 @@ class Event {
      * @param $event
      */
     public function add_ticket( $event ) {
-        $faker = Factory::create();
+        $faker      = Factory::create();
         $price_list = [ 9.99, 15, 25, 35, 49.99, 75, 150 ];
-        $type_list = [ 'Standard', 'General', 'Basic', 'Student' ];
-        $price = $faker->randomElement( $price_list );
-        $type = ( $price > 70 ) ? 'VIP' : $faker->randomElement( $type_list );
-        $data =
-            [
-                'ticket_name'             => $type,
-                'ticket_price'            => $price,
-                'ticket_description'      => 'Ticket for ' . $type . ' access to the event.',
-                'ticket_show_description' => 'yes',
-                'capacity'                => 25,
-                'stock'                   => 25
-            ];
-        $ticket = tribe( 'tickets.commerce.paypal' )->ticket_add( $event->ID, $data );
-        tribe( 'tickets.commerce.paypal' )->save_ticket( $event->ID, $ticket, $data );
-        //tribe_tickets_update_capacity( $ticket, 25 );
+        $type_list  = [ 'Standard', 'General', 'Basic', 'Student' ];
+        $price      = $faker->randomElement( $price_list );
+        $type       = ( $price > 70 ) ? 'VIP' : $faker->randomElement( $type_list );
+        $data       = [
+            'ticket_name'             => $type,
+            'ticket_price'            => $price,
+            'ticket_description'      => 'Ticket for ' . $type . ' access to the event.',
+            'ticket_show_description' => 'yes',
+            'tribe-ticket'            => [
+                'capacity'                => '25',
+                'stock'                   => '25'
+            ],
+        ];
+
+        tribe( 'tickets.commerce.paypal' )->ticket_add( $event->ID, $data );
     }
 }
