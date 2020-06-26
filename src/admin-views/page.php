@@ -119,7 +119,16 @@
 					<label for="addTicket">Add Ticket to generated events.</label>
 				</td>
 			</tr>
-		<?php endif; ?>
+		<?php else: ?>
+            <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+                <td colspan="2">
+                    <p style="color: royalblue">
+                        <span style="padding-right: 10px; padding-left: 5px">ℹ</span>
+                        <em>️Setup <strong>TribeCommerce</strong> or <strong>WooCommerce + Event Tickets Plus</strong> to add Tickets to Events.</em>
+                    </p>
+                </td>
+            </tr>
+        <?php endif; ?>
 		</tbody>
 	</table>
 	<?php submit_button( 'Generate Data' ); ?>

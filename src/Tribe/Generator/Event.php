@@ -243,12 +243,12 @@ class Event {
 	 */
 	public function add_rsvp( $event ) {
 		$data = [
-			'ticket_name'             => 'Free Entry',
+			'ticket_name'             => 'Free Entrance',
 			'ticket_description'      => 'RSVP to join us!',
 			'ticket_show_description' => 'yes',
 			'tribe-ticket'            => [
-				'capacity'                => '25',
-				'stock'                   => '25'
+				'capacity'                => '70',
+				'stock'                   => '70'
 			],
 		];
 
@@ -280,14 +280,15 @@ class Event {
 		$type_list  = [ 'Standard', 'General', 'Basic', 'Student' ];
 		$price      = $faker->randomElement( $price_list );
 		$type       = ( $price > 70 ) ? 'VIP' : $faker->randomElement( $type_list );
+		$capacity   = ( $price > 70 ) ? 50 : 100;
 		$data       = [
 			'ticket_name'             => $type,
 			'ticket_price'            => $price,
 			'ticket_description'      => 'Ticket for ' . $type . ' access to the event.',
 			'ticket_show_description' => 'yes',
 			'tribe-ticket'            => [
-				'capacity'                => '25',
-				'stock'                   => '25'
+				'capacity'                => $capacity,
+				'stock'                   => $capacity
 			],
 		];
 
