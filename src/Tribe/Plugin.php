@@ -76,6 +76,10 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( 'extension.test_data_generator.plugin', $this );
 		$this->container->register( PUE::class );
 
+		if ( defined( 'WP_CLI' ) ) {
+			$this->container->register( Cli::class );
+		}
+
 		if ( ! $this->check_plugin_dependencies() ) {
 			// If the plugin dependency manifest is not met, then bail and stop here.
 			return;

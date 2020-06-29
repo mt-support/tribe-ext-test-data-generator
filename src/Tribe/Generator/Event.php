@@ -20,6 +20,7 @@ class Event {
 	public function create( $quantity = 1, array $args = [] ) {
 		$fromDate = empty( $args['fromDate'] ) ? '-1 month' : $args['fromDate'];
 		$toDate = empty( $args['toDate'] ) ? '+1 month' : $args['toDate'];
+		$events = [];
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$event = tribe_events()->set_args( $this->random_event_data( $fromDate, $toDate) )->create();
 
