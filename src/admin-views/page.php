@@ -110,7 +110,7 @@
 		</tr>
 		<?php endif; ?>
 		<?php
-		$providers = Tribe__Tickets__Tickets::modules();
+		$providers = class_exists( 'Tribe__Tickets__Tickets' ) ? Tribe__Tickets__Tickets::modules() : [];
 		unset( $providers[ 'Tribe__Tickets__RSVP' ] );
 		if ( 0 < count( $providers ) ) : ?>
 			<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
