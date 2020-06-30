@@ -109,26 +109,28 @@
 			</td>
 		</tr>
 		<?php endif; ?>
-		<?php
-		$providers = class_exists( 'Tribe__Tickets__Tickets' ) ? Tribe__Tickets__Tickets::modules() : [];
-		unset( $providers[ 'Tribe__Tickets__RSVP' ] );
-		if ( 0 < count( $providers ) ) : ?>
-			<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
-				<td colspan="2">
-					<input type="checkbox" id='addTicket' name='tribe-ext-test-data-generator[events][ticket]'/>
-					<label for="addTicket">Add Ticket to generated events.</label>
-				</td>
-			</tr>
-		<?php else: ?>
-            <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
-                <td colspan="2">
-                    <p style="color: royalblue">
-                        <span style="padding-right: 10px; padding-left: 5px">ℹ</span>
-                        <em>️Setup <strong>TribeCommerce</strong> or <strong>WooCommerce + Event Tickets Plus</strong> to add Tickets to Events.</em>
-                    </p>
-                </td>
-            </tr>
-        <?php endif; ?>
+		<?php if( class_exists( 'Tribe__Tickets__Tickets' ) ) : ?>
+			<?php
+			$providers = Tribe__Tickets__Tickets::modules();
+			unset( $providers[ 'Tribe__Tickets__RSVP' ] );
+			if ( 0 < count( $providers ) ) : ?>
+				<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+					<td colspan="2">
+						<input type="checkbox" id='addTicket' name='tribe-ext-test-data-generator[events][ticket]'/>
+						<label for="addTicket">Add Ticket to generated events.</label>
+					</td>
+				</tr>
+			<?php else: ?>
+				<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+					<td colspan="2">
+						<p style="color: royalblue">
+							<span style="padding-right: 10px; padding-left: 5px">ℹ</span>
+							<em>️Setup <strong>TribeCommerce</strong> or <strong>WooCommerce + Event Tickets Plus</strong> to add Tickets to Events.</em>
+						</p>
+					</td>
+				</tr>
+			<?php endif; ?>
+		<?php endif; ?>
 		</tbody>
 	</table>
 	<?php submit_button( 'Generate Data' ); ?>
