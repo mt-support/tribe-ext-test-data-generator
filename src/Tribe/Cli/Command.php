@@ -235,7 +235,7 @@ class Command {
 	}
 
 	/**
-	 * Deletes event, venue and organizer data from the site..
+	 * Deletes event, venue and organizer data from the site.
 	 *
 	 * ## OPTIONS
 	 *
