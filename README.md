@@ -22,3 +22,34 @@ You can access all the available features in `Events > Test Data`.
 1. **Delete ALL Events-related posts:** this will do as promise and wipe out all existing Organizers, Venues and Events on your site.
 
 ###### Please note that if you have a lot of Organizers, Venues or Events, the delete requests may time-out.
+
+#### WP-CLI Support
+
+Example:
+```bash
+wp tec-test-data events generate 23
+	--from-date:2020-01-01
+	--to-date:+2 months
+	--with-organizers=10
+	--with-venues=5 
+	--with-images=10
+```
+The command above will:
+* Upload 10 images
+* Create 5 Venues
+* Create 10 Organizers
+* Create 23 Events between 1 January 2020 and +3 weeks from "now"
+
+Using the delete command:
+
+To delete **generated** events-related data:
+```bash
+wp tec-test-data delete
+```
+
+To delete **all** events-related data:
+```bash
+wp tec-test-data delete --all
+```
+
+For a full list of supported capabilities, check out src/Tribe/Cli/Command.php 

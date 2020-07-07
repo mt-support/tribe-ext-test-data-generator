@@ -2,7 +2,7 @@
 /**
  * Proxies wp-cli command to the generators.
  *
- * @since   TBD
+ * @since   1.0.1
  *
  * @package Tribe\Extensions\Test_Data_Generator\Cli
  */
@@ -17,7 +17,7 @@ use Tribe\Extensions\Test_Data_Generator\Generator\Venue;
 /**
  * Class Command
  *
- * @since   TBD
+ * @since   1.0.1
  *
  * @package Tribe\Extensions\Test_Data_Generator\Cli
  */

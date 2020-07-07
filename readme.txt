@@ -33,6 +33,10 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
+= [1.0.1] 2020-07-07 =
+
+* Feature - Add WP-CLI support.
+
 = [1.0.0.1] 2020-06-29 =
 
 * Fix - Prevent crash in Admin page if Event Tickets is not available.
