@@ -33,7 +33,7 @@ The command above will:
 * Upload 10 images
 * Create 5 Venues
 * Create 10 Organizers
-* Create 23 Events between 1 January 2020 and +3 weeks from "now"
+* Create 23 Events
 
 To specify a value each available option via the built-in prompt, use:
 ```bash
