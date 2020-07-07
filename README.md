@@ -27,18 +27,18 @@ You can access all the available features in `Events > Test Data`.
 
 Example:
 ```bash
-wp tec-test-data events generate 23
-	--from-date:2020-01-01
-	--to-date:+2 months
-	--with-organizers=10
-	--with-venues=5 
-	--with-images=10
+wp tec-test-data events generate 23 --with-organizers=10 --with-venues=5 --with-images=10
 ```
 The command above will:
 * Upload 10 images
 * Create 5 Venues
 * Create 10 Organizers
 * Create 23 Events between 1 January 2020 and +3 weeks from "now"
+
+To specify a value each available option via the built-in prompt, use:
+```bash
+wp tec-test-data events generate --prompt 
+```
 
 Using the delete command:
 
