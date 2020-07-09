@@ -3,7 +3,6 @@ namespace Tribe\Extensions\Test_Data_Generator\Generator;
 
 use DateInterval;
 use Faker\Factory;
-use Tribe\Events\Pro\Rewrite\Provider;
 use Tribe__Tickets__RSVP;
 use WP_Query;
 
@@ -20,9 +19,10 @@ class Event {
 	public function create( $quantity = 1, array $args = [] ) {
 		$fromDate = empty( $args['fromDate'] ) ? '-1 month' : $args['fromDate'];
 		$toDate = empty( $args['toDate'] ) ? '+1 month' : $args['toDate'];
+		$is_virtual = empty( $args['virtual'] ) ? false : true;
 		$events = [];
 		for ( $i = 1; $i <= $quantity; $i++ ) {
-			$event = tribe_events()->set_args( $this->random_event_data( $fromDate, $toDate) )->create();
+			$event = tribe_events()->set_args( $this->random_event_data( $fromDate, $toDate, $is_virtual) )->create();
 
 			if( ! empty( $args['rsvp'] ) ) {
 				$this->add_rsvp( $event );
@@ -42,10 +42,11 @@ class Event {
 	 *
 	 * @param string $fromDate
 	 * @param string $toDate
+     * @param boolean $is_virtual
 	 * @since 1.0.0
 	 * @return string[]
 	 */
-	public function random_event_data( $fromDate, $toDate ) {
+	public function random_event_data( $fromDate, $toDate, $is_virtual ) {
 		$event_date = $this->generate_event_date_data( $fromDate, $toDate );
 		$venue_id = $this->get_random_venue();
 		$organizer_id = $this->get_random_organizer();
@@ -59,7 +60,7 @@ class Event {
 		$currency_position = 'prefix';
 		$event_url = '';
 
-		return [
+		$random_event_data = [
 			'post_title'         => $event_title,
 			'start_date'         => $event_date['start'],
 			'end_date'           => $event_date['end'],
@@ -80,6 +81,39 @@ class Event {
 			'post_status'        => 'publish',
 			'tribe_test_data_gen'=> '1'
 			];
+
+		if( $is_virtual ) {
+		    $random_event_data += [
+                '_tribe_events_is_virtual'                  => 'yes',
+                '_tribe_events_virtual_embed_video'         => 'yes',
+                '_tribe_events_virtual_linked_button'       => 'yes',
+                '_tribe_events_virtual_show_embed_at'       => 'immediately',
+                '_tribe_events_virtual_show_on_event'       => 'yes',
+                '_tribe_events_virtual_show_on_views'       => 'yes',
+                '_tribe_events_virtual_rsvp_email_link'     => 'yes',
+                '_tribe_events_virtual_ticket_email_link'   => 'yes'
+            ];
+		    
+		    if ( mt_rand(0,1) ) {
+                $random_event_data += [
+                    '_tribe_events_virtual_url'                 => 'https://www.youtube.com/watch?v=W74FxZwhisM',
+                    '_tribe_events_virtual_linked_button_text'  => 'Watch Now'
+                    ];
+            } else {
+                $random_event_data += [
+                    '_tribe_events_virtual_url'                 => '',
+                    '_tribe_events_virtual_linked_button_text'  => 'Join Session',
+                    '_tribe_events_zoom_display_details'        => 'yes',
+                    '_tribe_events_zoom_meeting_data'           => 'a:13:{s:10:"created_at";s:20:"2019-09-05T16:54:14Z";s:8:"duration";i:60;s:7:"host_id";s:9:"AbcDefGHi";s:2:"id";i:1100000;s:8:"join_url";s:25:"https:\/\/zoom.us\/j\/1100000";s:8:"settings";a:20:{s:17:"alternative_hosts";s:0:"";s:13:"approval_type";i:2;s:5:"audio";s:4:"both";s:14:"auto_recording";s:5:"local";s:18:"close_registration";b:0;s:10:"cn_meeting";b:0;s:13:"enforce_login";b:0;s:21:"enforce_login_domains";s:0:"";s:24:"global_dial_in_countries";a:1:{i:0;s:2:"US";}s:22:"global_dial_in_numbers";a:3:{i:0;a:5:{s:4:"city";s:8:"New York";s:7:"country";s:2:"US";s:12:"country_name";s:2:"US";s:6:"number";s:13:"+1 1000200200";s:4:"type";s:4:"toll";}i:1;a:5:{s:4:"city";s:8:"San Jose";s:7:"country";s:2:"US";s:12:"country_name";s:2:"US";s:6:"number";s:13:"+1 6699006833";s:4:"type";s:4:"toll";}i:2;a:5:{s:4:"city";s:8:"San Jose";s:7:"country";s:2:"US";s:12:"country_name";s:2:"US";s:6:"number";s:12:"+1 408000000";s:4:"type";s:4:"toll";}}s:10:"host_video";b:0;s:10:"in_meeting";b:0;s:16:"join_before_host";b:1;s:15:"mute_upon_entry";b:0;s:17:"participant_video";b:0;s:30:"registrants_confirmation_email";b:1;s:7:"use_pmi";b:0;s:12:"waiting_room";b:0;s:9:"watermark";b:0;s:30:"registrants_email_notification";b:1;}s:10:"start_time";s:20:"2019-08-30T22:00:00Z";s:9:"start_url";s:75:"https:\/\/zoom.us\/s\/1100000?iIifQ.wfY2ldlb82SWo3TsR77lBiJjR53TNeFUiKbLyCvZZjw";s:6:"status";s:7:"waiting";s:8:"timezone";s:16:"America\/New_York";s:5:"topic";s:8:"API Test";s:4:"type";i:2;s:4:"uuid";s:24:"ng1MzyWNQaObxcf3+Gfm6A==";}',
+                    '_tribe_events_zoom_meeting_id'             => '1100000',
+                    '_tribe_events_zoom_join_url'               => 'https:\/\/zoom.us\/j\/1100000',
+                    '_tribe_events_zoom_join_instructions'      => 'https:\/\/support.zoom.us\/hc\/en-us\/articles\/201362193-Joining-a-Meeting', 
+                    '_tribe_events_zoom_global_dial_in_numbers' => ['+1 1000200200' => 'US', '+1 6699006833' => 'US']
+                ];
+            }
+        }
+
+		return $random_event_data;
 	}
 
 	/**
