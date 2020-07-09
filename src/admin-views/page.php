@@ -101,6 +101,14 @@
 				</select>
 			</td>
 		</tr>
+        <?php if( class_exists( 'Tribe\Events\Virtual\Plugin' ) ) : ?>
+            <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+                <td colspan="2">
+                    <input type="checkbox" id='markVirtual' name='tribe-ext-test-data-generator[events][virtual]'/>
+                    <label for="markVirtual">Make them Virtual events.</label>
+                </td>
+            </tr>
+        <?php endif; ?>
 		<?php if( class_exists( 'Tribe__Tickets__Main' ) ) : ?>
 		<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
 			<td colspan="2">
