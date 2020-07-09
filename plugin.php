@@ -4,7 +4,7 @@
  * Plugin URI:        
  * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-test-data-generator
  * Description:       This extension aims to provide an automated tool to generate high quality, life-like data for The Events Calendar family of plugins.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Author:            Modern Tribe, Inc.
  * Author URI:        http://m.tri.be/1971
  * License:           GPL version 3 or any later version

@@ -5,7 +5,7 @@ Tags: events, calendar
 Requires at least: 4.9.14
 Tested up to: 5.4.2
 Requires PHP: 5.6
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,6 +32,10 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 Please create a GitHub issue inside the project.
 
 == Changelog ==
+
+= [1.0.2] TBD =
+
+* -
 
 = [1.0.1] 2020-07-07 =
 
