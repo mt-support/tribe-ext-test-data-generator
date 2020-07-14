@@ -33,7 +33,7 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
-= [1.0.2] TBD =
+= [1.0.2] 2020-07-14 =
 
 * Feature - Ability to create Virtual Events with YouTube embed or Zoom meeting link. Requires Virtual Events 1.0.1 or later.
 
