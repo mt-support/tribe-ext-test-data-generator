@@ -109,6 +109,23 @@
                 </td>
             </tr>
         <?php endif; ?>
+        <?php if( class_exists( 'Tribe__Events__Pro__Main' ) ) : ?>
+            <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+                <td>
+                    <input type="checkbox" id='isRecurring' name='tribe-ext-test-data-generator[events][recurring]'/>
+                    <label for="isRecurring">Make them Recurring.</label>
+                </td>
+                <td class="tribe-dependent" data-depends="#isRecurring" data-condition-is-checked="true" style="background-color: whitesmoke">
+                    <label for="recurringType">Recurrence: </label>
+                    <select id='recurringType' name='tribe-ext-test-data-generator[events][recurring-type]'>
+                        <option value='all'>All</option>
+                        <option value='daily'>Daily</option>
+                        <option value='weekly'>Weekly</option>
+                        <option value='monthly'>Monthly</option>
+                        <option value='yearly'>Yearly</option>
+                </td>
+            </tr>
+        <?php endif; ?>
 		<?php if( class_exists( 'Tribe__Tickets__Main' ) ) : ?>
 		<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
 			<td colspan="2">
