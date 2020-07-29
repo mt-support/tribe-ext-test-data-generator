@@ -88,7 +88,7 @@ class Event {
 			];
 
 		if( $is_virtual ) {
-		    $random_event_data += [
+            $random_event_data = array_merge( $random_event_data, [
                 '_tribe_events_is_virtual'                  => 'yes',
                 '_tribe_events_virtual_embed_video'         => 'yes',
                 '_tribe_events_virtual_linked_button'       => 'yes',
@@ -97,15 +97,15 @@ class Event {
                 '_tribe_events_virtual_show_on_views'       => 'yes',
                 '_tribe_events_virtual_rsvp_email_link'     => 'yes',
                 '_tribe_events_virtual_ticket_email_link'   => 'yes'
-            ];
+            ] );
 		    
 		    if ( mt_rand(0,1) ) {
-                $random_event_data += [
+                $random_event_data = array_merge( $random_event_data, [
                     '_tribe_events_virtual_url'                 => 'https://www.youtube.com/watch?v=W74FxZwhisM',
                     '_tribe_events_virtual_linked_button_text'  => 'Watch Now'
-                    ];
+                    ] );
             } else {
-                $random_event_data += [
+                $random_event_data = array_merge( $random_event_data, [
                     '_tribe_events_virtual_url'                 => '',
                     '_tribe_events_virtual_linked_button_text'  => 'Join Session',
                     '_tribe_events_zoom_display_details'        => 'yes',
@@ -114,7 +114,7 @@ class Event {
                     '_tribe_events_zoom_join_url'               => 'https:\/\/zoom.us\/j\/1100000',
                     '_tribe_events_zoom_join_instructions'      => 'https:\/\/support.zoom.us\/hc\/en-us\/articles\/201362193-Joining-a-Meeting', 
                     '_tribe_events_zoom_global_dial_in_numbers' => ['+1 1000200200' => 'US', '+1 6699006833' => 'US']
-                ];
+                ] );
             }
         }
 
