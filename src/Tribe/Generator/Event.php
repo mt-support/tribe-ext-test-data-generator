@@ -98,7 +98,7 @@ class Event {
                 '_tribe_events_virtual_rsvp_email_link'     => 'yes',
                 '_tribe_events_virtual_ticket_email_link'   => 'yes'
             ] );
-		    
+
 		    if ( mt_rand(0,1) ) {
                 $random_event_data = array_merge( $random_event_data, [
                     '_tribe_events_virtual_url'                 => 'https://www.youtube.com/watch?v=W74FxZwhisM',
@@ -112,7 +112,7 @@ class Event {
                     '_tribe_events_zoom_meeting_data'           => 'a:13:{s:10:"created_at";s:20:"2019-09-05T16:54:14Z";s:8:"duration";i:60;s:7:"host_id";s:9:"AbcDefGHi";s:2:"id";i:1100000;s:8:"join_url";s:25:"https:\/\/zoom.us\/j\/1100000";s:8:"settings";a:20:{s:17:"alternative_hosts";s:0:"";s:13:"approval_type";i:2;s:5:"audio";s:4:"both";s:14:"auto_recording";s:5:"local";s:18:"close_registration";b:0;s:10:"cn_meeting";b:0;s:13:"enforce_login";b:0;s:21:"enforce_login_domains";s:0:"";s:24:"global_dial_in_countries";a:1:{i:0;s:2:"US";}s:22:"global_dial_in_numbers";a:3:{i:0;a:5:{s:4:"city";s:8:"New York";s:7:"country";s:2:"US";s:12:"country_name";s:2:"US";s:6:"number";s:13:"+1 1000200200";s:4:"type";s:4:"toll";}i:1;a:5:{s:4:"city";s:8:"San Jose";s:7:"country";s:2:"US";s:12:"country_name";s:2:"US";s:6:"number";s:13:"+1 6699006833";s:4:"type";s:4:"toll";}i:2;a:5:{s:4:"city";s:8:"San Jose";s:7:"country";s:2:"US";s:12:"country_name";s:2:"US";s:6:"number";s:12:"+1 408000000";s:4:"type";s:4:"toll";}}s:10:"host_video";b:0;s:10:"in_meeting";b:0;s:16:"join_before_host";b:1;s:15:"mute_upon_entry";b:0;s:17:"participant_video";b:0;s:30:"registrants_confirmation_email";b:1;s:7:"use_pmi";b:0;s:12:"waiting_room";b:0;s:9:"watermark";b:0;s:30:"registrants_email_notification";b:1;}s:10:"start_time";s:20:"2019-08-30T22:00:00Z";s:9:"start_url";s:75:"https:\/\/zoom.us\/s\/1100000?iIifQ.wfY2ldlb82SWo3TsR77lBiJjR53TNeFUiKbLyCvZZjw";s:6:"status";s:7:"waiting";s:8:"timezone";s:16:"America\/New_York";s:5:"topic";s:8:"API Test";s:4:"type";i:2;s:4:"uuid";s:24:"ng1MzyWNQaObxcf3+Gfm6A==";}',
                     '_tribe_events_zoom_meeting_id'             => '1100000',
                     '_tribe_events_zoom_join_url'               => 'https:\/\/zoom.us\/j\/1100000',
-                    '_tribe_events_zoom_join_instructions'      => 'https:\/\/support.zoom.us\/hc\/en-us\/articles\/201362193-Joining-a-Meeting', 
+                    '_tribe_events_zoom_join_instructions'      => 'https:\/\/support.zoom.us\/hc\/en-us\/articles\/201362193-Joining-a-Meeting',
                     '_tribe_events_zoom_global_dial_in_numbers' => ['+1 1000200200' => 'US', '+1 6699006833' => 'US']
                 ] );
             }
@@ -128,82 +128,40 @@ class Event {
 
 		    $type = $this->get_recurrence_type( $recurring_type );
 		    $count = $this->get_recurrence_count( $type );
-		    $recurrence_date = Dates::build_date_object( $event_date['start'] );
+			$recurrence_date = Dates::build_date_object( $event_date['start'] );
 
-		    switch( $type ) {
+			$default_data = [
+				'recurrence' => [
+					'rules'  => [
+						[
+							'type'   => $type,
+							'custom' => [
+								'same-time'  => 'yes',
+								'interval'   => '1'
+							],
+							'end-type'       => 'After',
+							'end-count'      => $count
+						],
+					],
+					'exclusions' => [],
+					'description' => ""
+				]
+			];
 
-                case 'Weekly':
-                    $weekday = (int) $recurrence_date->format('w') + 1;
-                    $random_event_data = array_merge( $random_event_data, [
-                        'recurrence' => [
-                            'rules'  => [
-                                [
-                                    'type'   => $type,
-                                    'custom' => [
-                                        'same-time'  => 'yes',
-                                        'interval'   => '1',
-                                        'week'       => [
-                                            'day'    => [
-                                                $weekday
-                                            ]
-                                        ]
-                                    ],
-                                    'end-type'       => 'After',
-                                    'end-count'      => $count
-                                ],
-                            ],
-                            'exclusions' => [],
-                            'description' => ""
-                        ]
-                    ] );
-                    break;
-                case 'Yearly':
-                    $month = $recurrence_date->format('n');
-                    $random_event_data = array_merge( $random_event_data, [
-                        'recurrence' => [
-                            'rules'  => [
-                                [
-                                    'type'   => $type,
-                                    'custom' => [
-                                        'same-time'  => 'yes',
-                                        'interval'   => '1',
-                                        'year'       => [
-                                            'month'    => [
-                                                $month
-                                            ],
-                                            'same-day' => 'yes'
-                                        ]
-                                    ],
-                                    'end-type'       => 'After',
-                                    'end-count'      => $count
-                                ],
-                            ],
-                            'exclusions' => [],
-                            'description' => ""
-                        ]
-                    ] );
-                    break;
-                default:
-                $random_event_data = array_merge( $random_event_data, [
-                    'recurrence' => [
-                        'rules'  => [
-                            [
-                                'type'   => $type,
-                                'custom' => [
-                                    'same-time'  => 'yes',
-                                    'interval'   => '1'
-                                ],
-                                'end-type'       => 'After',
-                                'end-count'      => $count
-                            ],
-                        ],
-                        'exclusions' => [],
-                        'description' => ""
-                    ]
-                ] );
+			if ( 'Yearly' === $type )  {
+				$month = $recurrence_date->format('n');
+				$default_data['recurrence']['rules']['custom']['year'] = [
+					'month'    => [ $month ],
+					'same-day' => 'yes'
+				];
+			}
 
-            }
+			if ( 'Weekly' === $type ) {
+				$weekday = (int) $recurrence_date->format('w') + 1;
+				$default_data['recurrence']['rules']['custom']['week'] = [ 'day' => [ $weekday ] ];
+			}
 
+			$random_event_data = array_merge( $random_event_data, $default_data );
         }
 
 		return $random_event_data;
