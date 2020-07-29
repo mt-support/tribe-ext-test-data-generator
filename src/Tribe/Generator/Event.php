@@ -5,6 +5,7 @@ use DateInterval;
 use Faker\Factory;
 use Tribe__Tickets__RSVP;
 use WP_Query;
+use Tribe__Date_Utils as Dates;
 
 class Event {
 
@@ -20,9 +21,11 @@ class Event {
 		$fromDate = empty( $args['fromDate'] ) ? '-1 month' : $args['fromDate'];
 		$toDate = empty( $args['toDate'] ) ? '+1 month' : $args['toDate'];
 		$is_virtual = empty( $args['virtual'] ) ? false : true;
+		$is_recurring = empty( $args['recurring'] ) ? false : true;
+		$recurring_type = empty( $args['recurring-type'] ) ? 'all' : $args['recurring-type'];
 		$events = [];
 		for ( $i = 1; $i <= $quantity; $i++ ) {
-			$event = tribe_events()->set_args( $this->random_event_data( $fromDate, $toDate, $is_virtual) )->create();
+			$event = tribe_events()->set_args( $this->random_event_data( $fromDate, $toDate, $is_virtual, $is_recurring, $recurring_type) )->create();
 
 			if( ! empty( $args['rsvp'] ) ) {
 				$this->add_rsvp( $event );
@@ -43,10 +46,12 @@ class Event {
 	 * @param string $fromDate
 	 * @param string $toDate
      * @param boolean $is_virtual
+     * @param boolean $is_recurring
+     * @param string $recurring_type
 	 * @since 1.0.0
 	 * @return string[]
 	 */
-	public function random_event_data( $fromDate, $toDate, $is_virtual ) {
+	public function random_event_data( $fromDate, $toDate, $is_virtual, $is_recurring, $recurring_type ) {
 		$event_date = $this->generate_event_date_data( $fromDate, $toDate );
 		$venue_id = $this->get_random_venue();
 		$organizer_id = $this->get_random_organizer();
@@ -113,8 +118,153 @@ class Event {
             }
         }
 
+		if( $is_recurring ) {
+		    //Force recurring events creation in foreground
+            $lots_of_them = static function () {
+                return PHP_INT_MAX;
+            };
+            add_filter( 'tribe_events_pro_recurrence_small_batch_size', $lots_of_them );
+            add_filter( 'tribe_events_pro_recurrence_batch_size', $lots_of_them );
+
+		    $type = $this->get_recurrence_type( $recurring_type );
+		    $count = $this->get_recurrence_count( $type );
+		    $recurrence_date = Dates::build_date_object( $event_date['start'] );
+
+		    switch( $type ) {
+
+                case 'Weekly':
+                    $weekday = (int) $recurrence_date->format('w') + 1;
+                    $random_event_data = array_merge( $random_event_data, [
+                        'recurrence' => [
+                            'rules'  => [
+                                [
+                                    'type'   => $type,
+                                    'custom' => [
+                                        'same-time'  => 'yes',
+                                        'interval'   => '1',
+                                        'week'       => [
+                                            'day'    => [
+                                                $weekday
+                                            ]
+                                        ]
+                                    ],
+                                    'end-type'       => 'After',
+                                    'end-count'      => $count
+                                ],
+                            ],
+                            'exclusions' => [],
+                            'description' => ""
+                        ]
+                    ] );
+                    break;
+                case 'Yearly':
+                    $month = $recurrence_date->format('n');
+                    $random_event_data = array_merge( $random_event_data, [
+                        'recurrence' => [
+                            'rules'  => [
+                                [
+                                    'type'   => $type,
+                                    'custom' => [
+                                        'same-time'  => 'yes',
+                                        'interval'   => '1',
+                                        'year'       => [
+                                            'month'    => [
+                                                $month
+                                            ],
+                                            'same-day' => 'yes'
+                                        ]
+                                    ],
+                                    'end-type'       => 'After',
+                                    'end-count'      => $count
+                                ],
+                            ],
+                            'exclusions' => [],
+                            'description' => ""
+                        ]
+                    ] );
+                    break;
+                default:
+                $random_event_data = array_merge( $random_event_data, [
+                    'recurrence' => [
+                        'rules'  => [
+                            [
+                                'type'   => $type,
+                                'custom' => [
+                                    'same-time'  => 'yes',
+                                    'interval'   => '1'
+                                ],
+                                'end-type'       => 'After',
+                                'end-count'      => $count
+                            ],
+                        ],
+                        'exclusions' => [],
+                        'description' => ""
+                    ]
+                ] );
+
+            }
+
+        }
+
 		return $random_event_data;
 	}
+
+    /**
+     * Gets recurrence type
+     *
+     * @since 1.0.3
+     * @param string $recurring_type
+     * @return string
+     */
+	public function get_recurrence_type( $recurring_type ) {
+        $faker = Factory::create();
+	    $all_types = [ 'Daily', 'Weekly', 'Monthly', 'Yearly' ];
+	    $type = 'Daily';
+
+	    if( $recurring_type == "all" ) {
+	        $type = $faker->randomElement( $all_types );
+        } else {
+	        switch( $recurring_type ) {
+                case 'daily':
+                    $type = 'Daily';
+                    break;
+                case 'weekly':
+                    $type = 'Weekly';
+                    break;
+                case 'monthly':
+                    $type = 'Monthly';
+                    break;
+                case 'yearly':
+                    $type = 'Yearly';
+            }
+        }
+
+	    return $type;
+    }
+
+    /**
+     * Gets number of recurring instances.
+     *
+     * @since 1.0.3
+     * @param string $type
+     * @return string
+     */
+    public function get_recurrence_count( $type ) {
+	    $count = '5';
+
+	    switch( $type ) {
+            case 'Weekly':
+                $count = '8';
+                break;
+            case 'Monthly':
+                $count = '10';
+                break;
+            case 'Yearly':
+                $count = '2';
+        }
+
+        return $count;
+    }
 
 	/**
 	 * Generate event dates and times.
