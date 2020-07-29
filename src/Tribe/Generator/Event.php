@@ -371,7 +371,7 @@ class Event {
 				$title = $faker->randomElement( ['Discussing ', 'Talking ', 'Dissecting ', 'Analyzing '] ) . $faker->jobTitle;
 				break;
 			case 4:
-				$title = $faker->name . $faker->randomElement( [' Discusses ', 'Talks ', ' Dissects ', ' Analyzes '] ) . $faker->jobTitle;
+				$title = $faker->name . $faker->randomElement( [' Discusses ', ' Talks ', ' Dissects ', ' Analyzes '] ) . $faker->jobTitle;
 		}
 		return $title;
 	}
