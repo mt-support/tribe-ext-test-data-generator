@@ -130,39 +130,45 @@ class Event {
 			$count = $this->get_recurrence_count( $type );
 			$recurrence_date = Dates::build_date_object( $event_date['start'] );
 
-			$default_data = [
-				'recurrence' => [
-					'rules'  => [
-						[
-							'type'   => $type,
-							'custom' => [
-								'same-time'  => 'yes',
-								'interval'   => '1'
-							],
-							'end-type'       => 'After',
-							'end-count'      => $count
-						],
-					],
-					'exclusions' => [],
-					'description' => ""
-				]
-			];
+            $default_data = [
+                'recurrence' => [
+                    'rules'  => [
+                        [
+                            'type'   => $type,
+                            'custom' => [
+                                'same-time'  => 'yes',
+                                'interval'   => '1'
+                            ],
+                            'end-type'       => 'After',
+                            'end-count'      => $count
+                        ],
+                    ],
+                    'exclusions' => [],
+                    'description' => ""
+                ]
+            ];
 
-			if ( 'Yearly' === $type )  {
-				$month = $recurrence_date->format('n');
-				$default_data['recurrence']['rules']['custom']['year'] = [
-					'month'    => [ $month ],
-					'same-day' => 'yes'
-				];
-			}
+            if ( 'Yearly' === $type )  {
+                $month = $recurrence_date->format('n');
+                foreach ( $default_data['recurrence']['rules'] as $index => $rule ) {
+                    $rule['custom']['year'] = [
+                        'month'    => [ $month ],
+                        'same-day' => 'yes'
+                    ];
+                    $default_data['recurrence']['rules'][$index] = $rule;
+                }
+            }
 
-			if ( 'Weekly' === $type ) {
-				$weekday = (int) $recurrence_date->format('w') + 1;
-				$default_data['recurrence']['rules']['custom']['week'] = [ 'day' => [ $weekday ] ];
-			}
+            if ( 'Weekly' === $type ) {
+                $weekday = (int) $recurrence_date->format('w');
+                foreach ( $default_data['recurrence']['rules'] as $index => $rule ) {
+                    $rule['custom']['week'] = [ 'day' => [ $weekday ] ];
+                    $default_data['recurrence']['rules'][$index] = $rule;
+                }
+            }
 
-			$random_event_data = array_merge( $random_event_data, $default_data );
-		}
+            $random_event_data = array_merge( $random_event_data, $default_data );
+        }
 
 		return $random_event_data;
 	}
