@@ -247,7 +247,7 @@ class Event {
 			$end = rand( 0, 1 ) ? $start->add( new DateInterval( 'PT2H' ) ) : $start->add( new DateInterval( 'PT3H' ) );
 			$end_formatted = rand( 0, 1 ) ? $end->format( 'Y-m-d H:00' ) : $end->format( 'Y-m-d H:30' );
 		} else {
-			$start_formatted = $end_formatted = $faker->dateTimeBetween('-1 month', '+1 month')->format('Y-m-d 00:00');
+			$start_formatted = $end_formatted = $faker->dateTimeBetween($fromDate, $toDate)->format('Y-m-d 00:00');
 		}
 
 		return [

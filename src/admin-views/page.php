@@ -20,13 +20,8 @@
 				<label for="numVenues">Generate Venues</label>
 			</th>
 			<td>
-				<select id='numVenues' name='tribe-ext-test-data-generator[venues][quantity]'>
-					<option value='0'>None</option>
-					<option value='10'>10</option>
-					<option value='100'>100</option>
-					<option value='1000'>1,000</option>
-					<option value='10000'>10,000</option>
-				</select>
+                <input type="number" id='numVenues' name='tribe-ext-test-data-generator[venues][quantity]'
+                        placeholder="None" style="width: 90px">
 			</td>
 		</tr>
 		<tr>
@@ -34,13 +29,8 @@
 				<label for="numOrganizers">Generate Organizers</label>
 			</th>
 			<td>
-				<select id='numOrganizers' name='tribe-ext-test-data-generator[organizers][quantity]'>
-					<option value='0'>None</option>
-					<option value='10'>10</option>
-					<option value='100'>100</option>
-					<option value='1000'>1,000</option>
-					<option value='10000'>10,000</option>
-				</select>
+                <input type="number" id='numOrganizers' name='tribe-ext-test-data-generator[organizers][quantity]'
+                       placeholder="None" style="width: 90px">
 			</td>
 		</tr>
 		<tr>
@@ -48,58 +38,23 @@
 				<label for="numEvents">Generate Events</label>
 			</th>
 			<td>
-				<select id='numEvents' name='tribe-ext-test-data-generator[events][quantity]'>
-					<option value='0'>None</option>
-					<option value='10'>10</option>
-					<option value='100'>100</option>
-					<option value='1000'>1,000</option>
-					<option value='10000'>10,000</option>
-				</select>
+                <input type="number" id='numEvents' name='tribe-ext-test-data-generator[events][quantity]'
+                       placeholder="None" style="width: 90px">
 			</td>
 		</tr>
 		<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
 			<td colspan="2">
 				<label for="eventFromDate">Create events between </label>
-				<select id='eventFromDate' name='tribe-ext-test-data-generator[events][fromDate]'>
-					<option value='now'>Now</option>
-					<option value='-1 week'>1 Week ago</option>
-					<option value='-2 weeks'>2 Weeks ago</option>
-					<option value='-3 weeks'>3 Weeks ago</option>
-					<option value='-1 month'>1 Month ago</option>
-					<option value='-2 months'>2 Months ago</option>
-					<option value='-3 months'>3 Months ago</option>
-					<option value='-4 months'>4 Months ago</option>
-					<option value='-5 months'>5 Months ago</option>
-					<option value='-6 months'>6 Months ago</option>
-					<option value='-7 months'>7 Months ago</option>
-					<option value='-8 months'>8 Months ago</option>
-					<option value='-9 months'>9 Months ago</option>
-					<option value='-10 months'>10 Months ago</option>
-					<option value='-11 months'>11 Months ago</option>
-					<option value='-1 year'>1 Year ago</option>
-					<option value='-2 years'>2 Years ago</option>
-				</select>
+                <input list="date_ranges" id='eventFromDate' name='tribe-ext-test-data-generator[events][fromDate]'
+                placeholder="now, -1 week OR YYYY-MM-DD" value="now" class="date-range" onClick="this.select();">
 				<label for="eventToDate"> and </label>
-				<select id='eventToDate' name='tribe-ext-test-data-generator[events][toDate]'>
-					<option value='+1 day'>Tomorrow</option>
-					<option value='+1 week'>1 Week ahead</option>
-					<option value='+2 weeks'>2 Weeks ahead</option>
-					<option value='+3 weeks'>3 Weeks ahead</option>
-					<option value='+1 month'>1 Month ahead</option>
-					<option value='+2 months'>2 Months ahead</option>
-					<option value='+3 months'>3 Months ahead</option>
-					<option value='+4 months'>4 Months ahead</option>
-					<option value='+5 months'>5 Months ahead</option>
-					<option value='+6 months'>6 Months ahead</option>
-					<option value='+7 months'>7 Months ahead</option>
-					<option value='+8 months'>8 Months ahead</option>
-					<option value='+9 months'>9 Months ahead</option>
-					<option value='+10 months'>10 Months ahead</option>
-					<option value='+11 months'>11 Months ahead</option>
-					<option value='+1 year'>1 Year ahead</option>
-					<option value='+2 years'>2 Years head</option>
-				</select>
-			</td>
+                <input list="date_ranges" id='eventToDate' name='tribe-ext-test-data-generator[events][toDate]'
+                       placeholder="now, +1 week OR YYYY-MM-DD" value="tomorrow" class="date-range" onClick="this.select();">
+                <br/>
+                <p style="color: royalblue"><em>For the date range, you can use date strings like <strong>"now", "tomorrow",
+                            "-2 weeks", "+3 months"</strong> or a specific date using <strong>YYYY-MM-DD</strong> format.
+                        <br/>Start typing in fields for suggestions of commonly used ranges.</em></p>
+            </td>
 		</tr>
         <?php if( class_exists( 'Tribe\Events\Virtual\Plugin' ) ) : ?>
             <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
@@ -207,3 +162,32 @@
 		</table>
 	</form>
 </div>
+
+<datalist id="date_ranges" style="display: none">
+    <option value="-2 years">
+    <option value="-1 year">
+    <option value="-6 months">
+    <option value="-3 months">
+    <option value="-2 months">
+    <option value="-1 months">
+    <option value="-3 weeks">
+    <option value="-2 weeks">
+    <option value="-1 week">
+    <option value="now">
+    <option value="tomorrow">
+    <option value="+1 week">
+    <option value="+2 weeks">
+    <option value="+3 weeks">
+    <option value="+1 month">
+    <option value="+2 months">
+    <option value="+3 months">
+    <option value="+6 months">
+    <option value="+1 year">
+    <option value="+2 years">
+</datalist>
+<style>
+    input.date-range {
+        min-height: 30px;
+        padding-left: 8px;
+    }
+</style>
