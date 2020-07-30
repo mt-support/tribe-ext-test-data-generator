@@ -106,7 +106,7 @@ class Utils {
             '_transient_tribe_ticket_prefix_pool'
         ];
 
-	    if( $reset_flag == 'on' ) {
+	    if( tribe_is_truthy( $reset_flag )  ) {
 	        foreach ( $tec_options_list as $option ) {
 	            delete_option( $option );
             }
