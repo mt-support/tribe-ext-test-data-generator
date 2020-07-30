@@ -128,8 +128,8 @@ class Page {
 		$venues = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'venues' ], [] );
 		$events = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'events' ], [] );
 		$images = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'uploads' ], [] );
-		$clear_generated = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clearGenerated' ], [] );
-		$clear_all_events_data = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clearEventsData' ], [] );
+		$clear_generated = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clear_generated' ], [] );
+		$clear_all_events_data = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clear_events_data' ], [] );
 		$created_organizers = $created_venues = $created_events = $created_images = $cleared_data = null;
 		if ( ! empty( $organizers['quantity'] ) ) {
 			$created_organizers = tribe( Generator\Organizer::class )->create( $organizers['quantity'], $organizers );
