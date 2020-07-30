@@ -71,6 +71,7 @@ class Utils {
      *
      * @since 1.0.3
      * @param $reset_flag
+     * @return bool
      */
 	public function reset_tec_settings( $reset_flag ) {
 	    $tec_options_list = [
@@ -114,5 +115,7 @@ class Utils {
 	            delete_transient( $transient );
             }
         }
+
+	    return true;
     }
 }
