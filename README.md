@@ -10,16 +10,17 @@ You can access all the available features in `Events > Test Data`.
 
 #### What you can do:
 
-1. **Create Venues:** you can automatically generate 10, 100, 1,000 or 10,000 venues for your site.
-1. **Create Organizers:** you can automatically generate 10, 100, 1,000 or 10,000 organizers for your site.
-1. **Create Events:** you can automatically generate 10, 100, 1,000 or 10,000 events, pulling from your pre-existing Venues, Organizers and uploaded images in your Media Library. You can select the date range for which each generated event's date will be randomly selected.
+1. **Create Venues:** you can automatically generate any specified number of venues for your site.
+1. **Create Organizers:** you can automatically generate any specified number of organizers for your site.
+1. **Create Events:** you can automatically generate any specified number of events, pulling from your pre-existing Venues, Organizers and uploaded images in your Media Library. You can select the date range for which each generated event's date will be randomly selected. Generated events can be standard events, Virtual events or Recurring events. You can also choose to add RSVP and/or Tickets to the generated events.
 
 ###### PLEASE NOTE that the amount of Venues, Organizers and Events you can create might be limited by your site's server setup (Available memory, timeout, processing power, etc.)
 
 ##### Handy Dandy Toolset
 1. **Import random images into your site's Media Library:** you can choose to import a few or a bunch of images to your site. A random selection of images with aspect ratio 16:9 will be selected from the service Picsum.photo
 1. **Clear generated Events-related posts:** this will help you when you need to scratch everything that has been automatically generated and start over! Automatically removes every Venue, Organizer and Event created using this extension. This won't delete your pre-existing Organizers, Venues or Events.
-1. **Delete ALL Events-related posts:** this will do as promise and wipe out all existing Organizers, Venues and Events on your site.
+1. **Delete ALL Events-related posts:** this will do as promise and wipe out all existing Organizers, 
+1. **Reset TEC Settings and Options:** this will clear out all your TEC-related options, settings and transients, effectively giving you a "factory reset".
 
 ###### Please note that if you have a lot of Organizers, Venues or Events, the delete requests may time-out.
 
