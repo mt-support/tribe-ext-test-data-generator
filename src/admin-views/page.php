@@ -17,38 +17,38 @@
 
 		<tr>
 			<th scope="row">
-				<label for="numVenues">Generate Venues</label>
+				<label for="num_venues">Generate Venues</label>
 			</th>
 			<td>
-                <input type="number" id='numVenues' name='tribe-ext-test-data-generator[venues][quantity]'
+                <input type="number" id='num_venues' name='tribe-ext-test-data-generator[venues][quantity]'
                         placeholder="None" style="width: 90px">
 			</td>
 		</tr>
 		<tr>
 			<th scope="row">
-				<label for="numOrganizers">Generate Organizers</label>
+				<label for="num_organizers">Generate Organizers</label>
 			</th>
 			<td>
-                <input type="number" id='numOrganizers' name='tribe-ext-test-data-generator[organizers][quantity]'
+                <input type="number" id='num_organizers' name='tribe-ext-test-data-generator[organizers][quantity]'
                        placeholder="None" style="width: 90px">
 			</td>
 		</tr>
 		<tr>
 			<th scope="row">
-				<label for="numEvents">Generate Events</label>
+				<label for="num_events">Generate Events</label>
 			</th>
 			<td>
-                <input type="number" id='numEvents' name='tribe-ext-test-data-generator[events][quantity]'
+                <input type="number" id='num_events' name='tribe-ext-test-data-generator[events][quantity]'
                        placeholder="None" style="width: 90px">
 			</td>
 		</tr>
-		<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+		<tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
 			<td colspan="2">
-				<label for="eventFromDate">Create events between </label>
-                <input list="date_ranges" id='eventFromDate' name='tribe-ext-test-data-generator[events][fromDate]'
+				<label for="event_from_date">Create events between </label>
+                <input list="date_ranges" id='event_from_date' name='tribe-ext-test-data-generator[events][from_date]'
                 placeholder="now, -1 week OR YYYY-MM-DD" value="now" class="date-range" onClick="this.select();">
-				<label for="eventToDate"> and </label>
-                <input list="date_ranges" id='eventToDate' name='tribe-ext-test-data-generator[events][toDate]'
+				<label for="event_to_date"> and </label>
+                <input list="date_ranges" id='event_to_date' name='tribe-ext-test-data-generator[events][to_date]'
                        placeholder="now, +1 week OR YYYY-MM-DD" value="tomorrow" class="date-range" onClick="this.select();">
                 <br/>
                 <p style="color: royalblue"><em>For the date range, you can use date strings like <strong>"now", "tomorrow",
@@ -57,22 +57,22 @@
             </td>
 		</tr>
         <?php if( class_exists( 'Tribe\Events\Virtual\Plugin' ) ) : ?>
-            <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+            <tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
                 <td colspan="2">
-                    <input type="checkbox" id='markVirtual' name='tribe-ext-test-data-generator[events][virtual]'/>
-                    <label for="markVirtual">Make them Virtual events.</label>
+                    <input type="checkbox" id='mark_virtual' name='tribe-ext-test-data-generator[events][virtual]'/>
+                    <label for="mark_virtual">Make them Virtual events.</label>
                 </td>
             </tr>
         <?php endif; ?>
         <?php if( class_exists( 'Tribe__Events__Pro__Main' ) ) : ?>
-            <tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+            <tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
                 <td>
-                    <input type="checkbox" id='isRecurring' name='tribe-ext-test-data-generator[events][recurring]'/>
-                    <label for="isRecurring">Make them Recurring.</label>
+                    <input type="checkbox" id='is_recurring' name='tribe-ext-test-data-generator[events][recurring]'/>
+                    <label for="is_recurring">Make them Recurring.</label>
                 </td>
-                <td class="tribe-dependent" data-depends="#isRecurring" data-condition-is-checked="true" style="background-color: whitesmoke">
-                    <label for="recurringType">Recurrence: </label>
-                    <select id='recurringType' name='tribe-ext-test-data-generator[events][recurring-type]'>
+                <td class="tribe-dependent" data-depends="#is_recurring" data-condition-is-checked="true" style="background-color: whitesmoke">
+                    <label for="recurring_type">Recurrence: </label>
+                    <select id='recurring_type' name='tribe-ext-test-data-generator[events][recurring_type]'>
                         <option value='all'>All</option>
                         <option value='daily'>Daily</option>
                         <option value='weekly'>Weekly</option>
@@ -82,10 +82,10 @@
             </tr>
         <?php endif; ?>
 		<?php if( class_exists( 'Tribe__Tickets__Main' ) ) : ?>
-		<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+		<tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
 			<td colspan="2">
-				<input type="checkbox" id='addRSVP' name='tribe-ext-test-data-generator[events][rsvp]'/>
-				<label for="addRSVP">Add RSVP to generated events.</label>
+				<input type="checkbox" id='add_RSVP' name='tribe-ext-test-data-generator[events][rsvp]'/>
+				<label for="add_RSVP">Add RSVP to generated events.</label>
 			</td>
 		</tr>
 		<?php endif; ?>
@@ -94,14 +94,14 @@
 			$providers = Tribe__Tickets__Tickets::modules();
 			unset( $providers[ 'Tribe__Tickets__RSVP' ] );
 			if ( 0 < count( $providers ) ) : ?>
-				<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+				<tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
 					<td colspan="2">
-						<input type="checkbox" id='addTicket' name='tribe-ext-test-data-generator[events][ticket]'/>
-						<label for="addTicket">Add Ticket to generated events.</label>
+						<input type="checkbox" id='add_ticket' name='tribe-ext-test-data-generator[events][ticket]'/>
+						<label for="add_ticket">Add Ticket to generated events.</label>
 					</td>
 				</tr>
 			<?php else: ?>
-				<tr class="tribe-dependent" data-depends="#numEvents" data-condition-not="0" style="background-color: whitesmoke">
+				<tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
 					<td colspan="2">
 						<p style="color: royalblue">
 							<span style="padding-right: 10px; padding-left: 5px">ℹ</span>
@@ -147,11 +147,11 @@
 			<tr>
 				<th scope="row">
 					<h4>Clear Events Data</h4>
-					<input type="checkbox" id='clearGeneratedData' name='tribe-ext-test-data-generator[clearGenerated]'/>
-					<label for="clearGeneratedData"><strong>DELETE Events, Venues and Organizers generated by this tool.</strong></label>
-					<div class="tribe-dependent" data-depends="#clearGeneratedData" data-condition-checked="true">
-						<input type="checkbox" id='clearAllEventsData' name='tribe-ext-test-data-generator[clearEventsData]'/>
-						<label for="clearAllEventsData" style="color: crimson"><strong>ALSO DELETE ALL other Events, Venues and Organizers on this site.</strong></label>
+					<input type="checkbox" id='clear_generated_data' name='tribe-ext-test-data-generator[clear_generated]'/>
+					<label for="clear_generated_data"><strong>DELETE Events, Venues and Organizers generated by this tool.</strong></label>
+					<div class="tribe-dependent" data-depends="#clear_generated_data" data-condition-checked="true">
+						<input type="checkbox" id='clear_all_events_data' name='tribe-ext-test-data-generator[clear_events_data]'/>
+						<label for="clear_all_events_data" style="color: crimson"><strong>ALSO DELETE ALL other Events, Venues and Organizers on this site.</strong></label>
 					</div>
 				</th>
 				<td style="vertical-align: bottom">

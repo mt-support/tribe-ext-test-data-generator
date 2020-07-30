@@ -18,14 +18,14 @@ class Event {
 	 * @throws \Tribe__Repository__Usage_Error
 	 */
 	public function create( $quantity = 1, array $args = [] ) {
-		$fromDate = empty( $args['fromDate'] ) ? '-1 month' : $args['fromDate'];
-		$toDate = empty( $args['toDate'] ) ? '+1 month' : $args['toDate'];
+		$from_date = empty( $args['from_date'] ) ? '-1 month' : $args['from_date'];
+		$to_date = empty( $args['to_date'] ) ? '+1 month' : $args['to_date'];
 		$is_virtual = empty( $args['virtual'] ) ? false : true;
 		$is_recurring = empty( $args['recurring'] ) ? false : true;
-		$recurring_type = empty( $args['recurring-type'] ) ? 'all' : $args['recurring-type'];
+		$recurring_type = empty( $args['recurring_type'] ) ? 'all' : $args['recurring_type'];
 		$events = [];
 		for ( $i = 1; $i <= $quantity; $i++ ) {
-			$event = tribe_events()->set_args( $this->random_event_data( $fromDate, $toDate, $is_virtual, $is_recurring, $recurring_type) )->create();
+			$event = tribe_events()->set_args( $this->random_event_data( $from_date, $to_date, $is_virtual, $is_recurring, $recurring_type) )->create();
 
 			if( ! empty( $args['rsvp'] ) ) {
 				$this->add_rsvp( $event );
@@ -43,16 +43,16 @@ class Event {
 	/**
 	 * Generate pseudo-randomized Event data.
 	 *
-	 * @param string $fromDate
-	 * @param string $toDate
+	 * @param string $from_date
+	 * @param string $to_date
 	 * @param boolean $is_virtual
 	 * @param boolean $is_recurring
 	 * @param string $recurring_type
 	 * @since 1.0.0
 	 * @return string[]
 	 */
-	public function random_event_data( $fromDate, $toDate, $is_virtual, $is_recurring, $recurring_type ) {
-		$event_date = $this->generate_event_date_data( $fromDate, $toDate );
+	public function random_event_data( $from_date, $to_date, $is_virtual, $is_recurring, $recurring_type ) {
+		$event_date = $this->generate_event_date_data( $from_date, $to_date );
 		$venue_id = $this->get_random_venue();
 		$organizer_id = $this->get_random_organizer();
 		$timezone = $this->determine_timezone($venue_id);
@@ -233,21 +233,21 @@ class Event {
 	/**
 	 * Generate event dates and times.
 	 *
-	 * @param string $fromDate
-	 * @param string $toDate
+	 * @param string $from_date
+	 * @param string $to_date
 	 * @since 1.0.0
 	 * @return array
 	 */
-	public function generate_event_date_data( $fromDate, $toDate ) {
+	public function generate_event_date_data( $from_date, $to_date ) {
 		$faker = Factory::create();
 		$all_day = $faker->optional(0.95, 'yes')->randomElement(['no']);
 		if ( $all_day == 'no' ) {
-			$start = $faker->dateTimeBetween( $fromDate, $toDate );
+			$start = $faker->dateTimeBetween( $from_date, $to_date );
 			$start_formatted = rand( 0, 1 ) ? $start->format( 'Y-m-d H:00' ) : $start->format( 'Y-m-d H:30' );
 			$end = rand( 0, 1 ) ? $start->add( new DateInterval( 'PT2H' ) ) : $start->add( new DateInterval( 'PT3H' ) );
 			$end_formatted = rand( 0, 1 ) ? $end->format( 'Y-m-d H:00' ) : $end->format( 'Y-m-d H:30' );
 		} else {
-			$start_formatted = $end_formatted = $faker->dateTimeBetween($fromDate, $toDate)->format('Y-m-d 00:00');
+			$start_formatted = $end_formatted = $faker->dateTimeBetween($from_date, $to_date)->format('Y-m-d 00:00');
 		}
 
 		return [
