@@ -30,7 +30,7 @@ class Utils {
 	 * @return boolean
 	 */
 	public function clear_generated( $clear_flag ) {
-		if( $clear_flag == 'on' ) {
+		if( tribe_is_truthy( $clear_flag ) ) {
 			while( tribe_venues()->by( 'meta_like', 'tribe_test_data_gen' )->found() ) {
 				tribe_venues()->by( 'meta_like', 'tribe_test_data_gen' )->delete();
 			}
@@ -52,7 +52,7 @@ class Utils {
 	 * @return boolean
 	 */
 	public function clear_all( $clear_flag ) {
-		if( $clear_flag == 'on' ) {
+		if( tribe_is_truthy( $clear_flag ) ) {
 			while( tribe_venues()->found() ) {
 				tribe_venues()->delete();
 			}
