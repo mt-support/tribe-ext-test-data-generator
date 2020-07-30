@@ -161,6 +161,29 @@
 			</tbody>
 		</table>
 	</form>
+
+    <form method="post" action="" novalidate="novalidate">
+        <?php wp_nonce_field( $nonce_action_key ); ?>
+        <table class="form-table" role="presentation">
+            <tbody>
+            <tr>
+                <th scope="row">
+                    <h4>Reset TEC Settings</h4>
+                    <input type="checkbox" id='reset_tec_settings' name='tribe-ext-test-data-generator[reset_tec_settings]'/>
+                    <label for="reset_tec_settings"><strong>RESET TEC Settings</strong></label>
+                    <p class="tribe-dependent"
+                       data-depends="#reset_tec_settings"
+                       data-condition-checked="true"
+                       style="color: crimson">
+                        Deletes all saved options / settings for TEC, TEC Widgets and TEC-related Transients from the db.</p>
+                </th>
+                <td style="vertical-align: bottom">
+                    <?php submit_button( 'RESET Settings' ); ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
 </div>
 
 <datalist id="date_ranges" style="display: none">
