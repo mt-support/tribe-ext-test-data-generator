@@ -151,8 +151,8 @@ class Page {
 			$cleared_data = tribe ( Generator\Utils::class )->clear_all( $clear_all_events_data );
 		}
 		if ( ! empty( $reset_tec_settings ) ) {
-		    $cleared_data = tribe ( Generator\Utils::class )->reset_tec_settings( $reset_tec_settings );
-        }
+			$cleared_data = tribe ( Generator\Utils::class )->reset_tec_settings( $reset_tec_settings );
+		}
 
 		if ( ! empty( $created_organizers || ! empty( $created_venues
 				|| ! empty( $created_events ) || ! empty( $created_images ) || ! empty( $cleared_data ) ) ) ) {
