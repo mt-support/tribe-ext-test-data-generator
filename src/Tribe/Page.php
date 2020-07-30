@@ -130,6 +130,7 @@ class Page {
 		$images = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'uploads' ], [] );
 		$clear_generated = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clear_generated' ], [] );
 		$clear_all_events_data = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clear_events_data' ], [] );
+		$reset_tec_settings = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'reset_tec_settings' ], [] );
 		$created_organizers = $created_venues = $created_events = $created_images = $cleared_data = null;
 		if ( ! empty( $organizers['quantity'] ) ) {
 			$created_organizers = tribe( Generator\Organizer::class )->create( $organizers['quantity'], $organizers );
@@ -149,6 +150,9 @@ class Page {
 		if ( ! empty( $clear_all_events_data ) ) {
 			$cleared_data = tribe ( Generator\Utils::class )->clear_all( $clear_all_events_data );
 		}
+		if ( ! empty( $reset_tec_settings ) ) {
+		    $cleared_data = tribe ( Generator\Utils::class )->reset_tec_settings( $reset_tec_settings );
+        }
 
 		if ( ! empty( $created_organizers || ! empty( $created_venues
 				|| ! empty( $created_events ) || ! empty( $created_images ) || ! empty( $cleared_data ) ) ) ) {

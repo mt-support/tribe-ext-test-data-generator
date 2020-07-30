@@ -65,4 +65,54 @@ class Utils {
 		}
 		return true;
 	}
+
+    /**
+     * Deletes all TEC-related rows from wp_options.
+     *
+     * @since 1.0.3
+     * @param $reset_flag
+     */
+	public function reset_tec_settings( $reset_flag ) {
+	    $tec_options_list = [
+            'external_updates-tribe-filterbar',
+            'tribe_customizer',
+            'tribe_events_calendar_options',
+            'tribe_events_cat_children',
+            'tribe_events_filters_current_active_filters',
+            'tribe_feature_support_check_lock',
+            'tribe_last_event_tickets_after_create_ticket',
+            'tribe_last_generate_rewrite_rules',
+            'tribe_last_save_post',
+            'tribe_last_updated_option',
+            'tribe_pue_key_notices',
+            'widget_tribe-events-adv-list-widget',
+            'widget_tribe-events-countdown-widget',
+            'widget_tribe-events-list-widget',
+            'widget_tribe-events-venue-widget',
+            'widget_tribe-mini-calendar',
+            'widget_tribe-this-week-events-widget'
+        ];
+	    $tec_transients_list = [
+            '_transient__tribe_admin_notices',
+            '_transient__tribe_geoloc_fix_needed',
+            '_transient_timeout__tribe_admin_notices',
+            '_transient_timeout__tribe_geoloc_fix_needed',
+            '_transient_timeout_tribe_feature_detection',
+            '_transient_tribe_events_shortcode_tribe_events_params_799245fc',
+            '_transient_tribe_events_shortcode_tribe_events_params_c5cff3b2',
+            '_transient_tribe_events_shortcode_tribe_events_params_e11815bb',
+            '_transient_tribe_feature_detection',
+            '_transient_tribe_ticket_prefix_pool'
+        ];
+
+	    if( $reset_flag == 'on' ) {
+	        foreach ( $tec_options_list as $option ) {
+	            delete_option( $option );
+            }
+
+	        foreach ( $tec_transients_list as $transient ) {
+	            delete_transient( $transient );
+            }
+        }
+    }
 }
