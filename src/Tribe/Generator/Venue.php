@@ -5,18 +5,31 @@ use Faker\Factory;
 
 class Venue {
 	/**
-	 * Creates randomly generated Venues
+	 * Creates randomly generated Venues.
 	 *
 	 * @since 1.0.0
-	 * @param int $quantity
-	 * @param array $args
-	 * @return mixed
-	 * @throws \Tribe__Repository__Usage_Error
+	 * @since TBD Added support for the `$tick` parameter.
+ *
+	 * @param int                           $quantity The number of Venues to create.
+	 * @param array<string,string|int|bool> $args     An array of arguments to customize the Venue creation.
+	 * @param callable|null                 $tick     An optional callback that will be fired after each Venue creation;
+	 *                                                the callback will receive the just created Venue post object as
+	 *                                                argument.
+	 *
+	 * @return array<\WP_Post> An array of the generated Venues post objects.
+	 *@throws \Tribe__Repository__Usage_Error If the arguments do not make sense in the context of the ORM Venue
+	 *                                         creation.
+	 *
 	 */
-	public function create( $quantity = 1, array $args = [] ) {
+	public function create( $quantity = 1, array $args = [], callable  $tick = null ) {
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$venues[] = tribe_venues()->set_args( $this->random_venue_data() )->create();
+
+			if ( is_callable( $tick ) ) {
+				$tick( end( $venues ) );
+			}
 		}
+
 		return $venues;
 	}
 

@@ -1,24 +1,32 @@
 <?php
 namespace Tribe\Extensions\Test_Data_Generator\Generator;
 
-use Exception;
-use Faker\Factory;
-
 class Utils {
 
 	/**
 	 * Upload random images into Media Gallery
 	 *
 	 * @since 1.0.0
-	 * @param int $quantity
-	 * @param array $args
-	 * @return mixed
+	 * @since TBD Added support for the `$tick` parameter.
+	 *
+	 * @param int                           $quantity The number of images to import to the site.
+	 * @param array<string,string|int|bool> $args     The upload arguments.
+	 * @param callable|null                 $tick     An optional callback that will be fired after each Image upload;
+	 *                                                the callback will receive the just uploaded image post ID as
+	 *                                                argument.
+	 *
+	 * @return array<int|bool> An array of attachment post IDs or `false` if the upload failed.
 	 */
-	public function upload( $quantity = 1, array $args = [] ) {
+	public function upload( $quantity = 1, array $args = [], callable $tick = null ) {
 		for ( $i = 0; $i < $quantity; $i++ ) {
 			$image_url = 'https://picsum.photos/640/360' . '#' . bin2hex(random_bytes(16));
 			$uploads[] = tribe_upload_image($image_url);
 		}
+
+		if ( is_callable( $tick ) ) {
+			$tick( end( $uploads ) );
+		}
+
 		return $uploads;
 	}
 
@@ -41,6 +49,10 @@ class Utils {
 				tribe_events()->by( 'meta_like', 'tribe_test_data_gen' )->delete();
 			}
 		}
+
+		// There's a number of things that might need updates after such a reset.
+		wp_cache_flush();
+
 		return true;
 	}
 
@@ -63,6 +75,10 @@ class Utils {
 				tribe_events()->delete();
 			}
 		}
+
+		// There's a number of things that might need updates after such a reset.
+		wp_cache_flush();
+
 		return true;
 	}
 
@@ -115,6 +131,9 @@ class Utils {
 	            delete_transient( $transient );
             }
         }
+
+	    // There's a number of things that might need updates after such a reset.
+	    wp_cache_flush();
 
 	    return true;
     }
