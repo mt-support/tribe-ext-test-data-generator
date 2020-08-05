@@ -5,18 +5,31 @@ use Faker\Factory;
 
 class Organizer {
 	/**
-	 * Creates randomly generated Organizers
+	 * Creates randomly generated Organizers.
 	 *
 	 * @since 1.0.0
-	 * @param int $quantity
-	 * @param array $args
-	 * @return mixed
-	 * @throws \Tribe__Repository__Usage_Error
+	 * @since TBD Added support for the `$tick` parameter.
+	 *
+	 * @param int                           $quantity The number of Organizers to create.
+	 * @param array<string,string|int|bool> $args     An array of arguments to customize the Organizer creation.
+	 * @param callable|null                 $tick     An optional callback that will be fired after each Organizer creation;
+	 *                                                the callback will receive the just created Organizer post object as
+	 *                                                argument.
+	 *
+	 * @throws \Tribe__Repository__Usage_Error If the arguments do not make sense in the context of the ORM Organizer
+	 *                                         creation.
+	 *
+	 * @return array<\WP_Post> An array of the generated Organizers post objects.
 	 */
-	public function create( $quantity = 1, array $args = [] ) {
+	public function create( $quantity = 1, array $args = [], callable $tick = null ) {
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$organizers[] = tribe_organizers()->set_args( $this->random_organizer_data() )->create();
+
+			if ( is_callable( $tick ) ) {
+				$tick( end( $organizers ) );
+			}
 		}
+
 		return $organizers;
 	}
 

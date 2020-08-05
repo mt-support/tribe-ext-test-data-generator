@@ -34,5 +34,6 @@ class Cli extends \tad_DI52_ServiceProvider {
 		\WP_CLI::add_command( 'tec-test-data venues generate', [ $command, 'generate_venues' ] );
 		\WP_CLI::add_command( 'tec-test-data image generate', [ $command, 'generate_images' ] );
 		\WP_CLI::add_command( 'tec-test-data delete', [ $command, 'delete' ] );
+		\WP_CLI::add_command( 'tec-test-data reset', [ $command, 'reset' ] );
 	}
 }

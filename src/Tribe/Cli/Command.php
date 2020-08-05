@@ -13,6 +13,7 @@ use Tribe\Extensions\Test_Data_Generator\Generator\Event;
 use Tribe\Extensions\Test_Data_Generator\Generator\Organizer;
 use Tribe\Extensions\Test_Data_Generator\Generator\Utils;
 use Tribe\Extensions\Test_Data_Generator\Generator\Venue;
+use function WP_CLI\Utils\make_progress_bar;
 
 /**
  * Class Command
@@ -22,6 +23,22 @@ use Tribe\Extensions\Test_Data_Generator\Generator\Venue;
  * @package Tribe\Extensions\Test_Data_Generator\Cli
  */
 class Command {
+	/**
+	 * A map from the command associative arguments to the Event generator input arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string,string>
+	 */
+	protected $events_generator_translation_map = [
+		'from-date'    => 'fromDate',
+		'to-date'      => 'toDate',
+		'with-rsvp'    => 'rsvp',
+		'with-tickets' => 'tickets',
+		'virtual'      => 'virtual',
+		'recurring'    => [ 'recurring', 'recurring_type' ]
+	];
+
 	/**
 	 * Create a set of test events.
 	 *
@@ -75,6 +92,26 @@ class Command {
 	 * default: false
 	 * ---
 	 *
+	 * [--virtual]
+	 * : Whether to make the generated events Virtual or not.
+	 * Does NOT require "The Events Calendar: Virtual Events" plugin.
+	 * ---
+	 * default: false
+	 * ---
+	 *
+	 * [--recurring[=<recurring_type>]]
+	 * : Whether to create the events as recurring and, if so, what recurrence pattern to use.
+	 * Requires "The Events Calendar PRO" plugin to be installed and active on the site.
+	 * ---
+	 * default: all
+	 * options:
+	 *   - all
+	 *   - yearly
+	 *   - monthly
+	 *   - weekly
+	 *   - daily
+	 * ---
+	 *
 	 * ## EXAMPLES
 	 *
 	 *     wp tec-test-data events generate
@@ -83,44 +120,67 @@ class Command {
 	 *     wp tec-test-data events generate 23 --with-rsvp
 	 *     wp tec-test-data events generate 23 --with-tickets
 	 *     wp tec-test-data events generate 23 --with-venues 2 --with-organizers=5 --with-images=10
+	 *     wp tec-test-data events generate 23 --virtual
+	 *     wp tec-test-data events generate 23 --virtual --with-venues=2 --with-organizers=2 --with-images=2
+	 *     wp tec-test-data events generate 23 --recurring
+	 *     wp tec-test-data events generate 23 --recurring=all
+	 *     wp tec-test-data events generate 23 --recurring=weekly
 	 *
 	 * @when after_wp_load
 	 */
 	public function generate_events( array $args = [], array $assoc_args = [] ) {
-		$quantity  = isset( $args[0] ) ? (int) $args[0] : 1;
-		$generator = new Event();
-		$map       = [
-			'from-date'    => 'fromDate',
-			'to-date'      => 'toDate',
-			'with-rsvp'    => 'rsvp',
-			'with-tickets' => 'tickets',
-		];
+		if ( ! empty( $assoc_args['recurring'] ) ) {
+			$this->check_recurring_support();
+		}
 
-		if ( isset( $assoc_args['with-images'] ) ) {
+		if ( ! empty( $assoc_args['with-images'] ) ) {
 			$images = (int) $assoc_args['with-images'];
 			$this->generate_images( [ $images ] );
 		}
 
-		if ( isset( $assoc_args['with-venues'] ) ) {
+		if ( ! empty( $assoc_args['with-venues'] ) ) {
 			$venue_quantity = (int) $assoc_args['with-venues'];
 			$this->generate_venues( [ $venue_quantity ] );
 		}
 
-		if ( isset( $assoc_args['with-organizers'] ) ) {
+		if ( ! empty( $assoc_args['with-organizers'] ) ) {
 			$organizer_quantity = (int) $assoc_args['with-organizers'];
 			$this->generate_organizers( [ $organizer_quantity ] );
 		}
 
-		$generator_args = [];
-		foreach ( array_diff_key( $assoc_args, $map ) as $key => $value ) {
-			$generator_args[ $map[ $key ] ] = $value;
-		}
+		$generator_args = $this->translate_assoc_args_to_generator_args(
+			$assoc_args,
+			$this->events_generator_translation_map
+		);
+
+		$quantity = isset( $args[0] ) ? (int) $args[0] : 1;
+
+		$progress_bar = make_progress_bar( 'Creating events...', $quantity );
+		$tick         = static function () use ( $progress_bar ) {
+			$progress_bar->tick();
+		};
+
 		try {
-			$generator->create( $quantity, $args );
+			( new Event() )->create( $quantity, $generator_args, $tick );
+			$progress_bar->finish();
 		} catch ( \Exception $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}
-		\WP_CLI::success( "Generated {$quantity} " . _n( 'event', 'events', $quantity ) );
+		$event_attributes = [];
+		foreach ( [ 'recurring', 'virtual' ] as $attribute ) {
+			if ( ! empty( $generator_args[ $attribute ] ) ) {
+				$event_attributes[] = $attribute;
+			}
+		}
+		$event_attributes = count( $event_attributes ) ? implode( ', ', $event_attributes ) . ' ' : '';
+		\WP_CLI::success(
+			sprintf(
+				'Generated %d %s%s',
+				$quantity,
+				$event_attributes,
+				_n( 'event', 'events', $quantity )
+			)
+		);
 	}
 
 	/**
@@ -149,11 +209,19 @@ class Command {
 		];
 
 		$generator_args = [];
+
 		foreach ( array_diff_key( $assoc_args, $map ) as $key => $value ) {
 			$generator_args[ $map[ $key ] ] = $value;
 		}
+
+		$progress_bar = make_progress_bar( 'Importing images...', $quantity );
+		$tick         = static function () use ( $progress_bar ) {
+			$progress_bar->tick();
+		};
+
 		try {
-			$generator->upload( $quantity, $args );
+			$generator->upload( $quantity, $args, $tick );
+			$progress_bar->finish();
 		} catch ( \Exception $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}
@@ -180,7 +248,6 @@ class Command {
 	 */
 	public function generate_venues( array $args = [], array $assoc_args = [] ) {
 		$quantity  = isset( $args[0] ) ? (int) $args[0] : 1;
-		$generator = new Venue();
 		$map       = [
 			// @todo update as we support more arguments.
 		];
@@ -189,8 +256,15 @@ class Command {
 		foreach ( array_diff_key( $assoc_args, $map ) as $key => $value ) {
 			$generator_args[ $map[ $key ] ] = $value;
 		}
+
+		$progress_bar = make_progress_bar( 'Creating Venues...', $quantity );
+		$tick         = static function () use ( $progress_bar ) {
+			$progress_bar->tick();
+		};
+
 		try {
-			$generator->create( $quantity, $args );
+			( new Venue() )->create( $quantity, $args, $tick );
+			$progress_bar->finish();
 		} catch ( \Exception $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}
@@ -216,8 +290,6 @@ class Command {
 	 * @when after_wp_load
 	 */
 	public function generate_organizers( array $args = [], array $assoc_args = [] ) {
-		$quantity  = isset( $args[0] ) ? (int) $args[0] : 1;
-		$generator = new Organizer();
 		$map       = [
 			// @todo update as we support more arguments.
 		];
@@ -226,8 +298,16 @@ class Command {
 		foreach ( array_diff_key( $assoc_args, $map ) as $key => $value ) {
 			$generator_args[ $map[ $key ] ] = $value;
 		}
+
+		$quantity  = isset( $args[0] ) ? (int) $args[0] : 1;
+		$progress_bar = make_progress_bar( 'Creating Organizers...', $quantity );
+		$tick         = static function () use ( $progress_bar ) {
+			$progress_bar->tick();
+		};
+
 		try {
-			$generator->create( $quantity, $args );
+			( new Organizer() )->create( $quantity, $args, $tick );
+			$progress_bar->finish();
 		} catch ( \Exception $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}
@@ -262,5 +342,65 @@ class Command {
 
 		$utils->clear_generated( 'on' );
 		\WP_CLI::success('Deleted all generated Events, Venues and Organizers from the site.');
+	}
+
+	/**
+	 * Deletes all saved options and settings for TEC, TEC Widgets and TEC-related Transients from the db.ite.
+	 *
+	 * ## OPTIONS
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp tec-test-data reset
+	 *
+	 * @when after_wp_load
+	 */
+	public function reset() {
+		$utils = new Utils();
+		$utils->reset_tec_settings( 'on' );
+
+		\WP_CLI::success(
+			'Deleted all saved options and settings for TEC, TEC Widgets and TEC-related transients from the db.'
+		);
+	}
+
+	/**
+	 * Translates the command associative arguments to the keys and format a generator will be able to consume.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string|float|int> $assoc_args      The command input associative arguments.
+	 * @param array<string,string|float|int|array<string>> $translation_map The command input associative arguments.
+	 *
+	 * @return array<string,string|int|float> The generator args, translated from the command associative args.
+	 */
+	protected function translate_assoc_args_to_generator_args( array $assoc_args, array $translation_map ) {
+		// Remove any argument that is not one supported by the Events generator.
+		$generator_args  = array_intersect_key( $assoc_args, $translation_map );
+		$translated_args = [];
+		// Populate an array of generator arguments using the keys the generator supports.
+		foreach ( $generator_args as $assoc_args_key => $value ) {
+			// Allow for one associative argument to map to multiple generator keys.
+			foreach( (array)$translation_map[ $assoc_args_key ] as $generator_key){
+				$translated_args[ $generator_key ] = $value;
+			}
+		}
+
+		return $translated_args;
+	}
+
+	/**
+	 * Checks whether recurrence is supported, by means of The Events Calendar PRO plugin, or not.
+	 *
+	 * @since TBD
+	 *
+	 * @throws \WP_CLI\ExitException If the Main class of The Events Calendar PRO plugin cannot be found.
+	 */
+	protected function check_recurring_support() {
+		if ( class_exists( 'Tribe__Events__Pro__Main' ) ) {
+			return;
+		}
+
+		\WP_Cli::error( 'The "--recurring" option requires The  Events Calendar PRO plugin to be installed' );
 	}
 }
