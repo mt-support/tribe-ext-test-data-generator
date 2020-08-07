@@ -425,6 +425,7 @@ class Event {
 		];
 
 		tribe( 'tickets.rsvp' )->ticket_add( $event->ID, $data );
+        add_post_meta( $event->ID, '_EventCost', '0' );
 	}
 
 	/**
@@ -465,5 +466,6 @@ class Event {
 		];
 
 		$provider->ticket_add( $event->ID, $data );
+        add_post_meta( $event->ID, '_EventCost', $price );
 	}
 }

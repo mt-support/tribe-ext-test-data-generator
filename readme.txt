@@ -37,6 +37,7 @@ Please create a GitHub issue inside the project.
 
 * Enhancement - Add WP-CLI support for creating Virtual and Recurring events, and support for the TEC Reset functionality.
 * Feature - Add progress bar to WP-CLI functionality.
+* Fix - Update event cost meta after creating RSVP or Ticket so the event cost info can be displayed correctly in the calendar views.
 
 = [1.0.3] 2020-07-30 =
 
