@@ -44,6 +44,9 @@ class Event {
 
 			if( ! empty( $args['ticket'] ) ) {
 				$this->add_ticket( $event );
+				//Clear ticket cache
+                $cache = new \Tribe__Cache();
+                $cache->delete( 'tribe_event_tickets_from_' . $event->ID );
 			}
 
 			if ( is_callable( $tick ) ) {
@@ -425,6 +428,7 @@ class Event {
 		];
 
 		tribe( 'tickets.rsvp' )->ticket_add( $event->ID, $data );
+        add_post_meta( $event->ID, '_EventCost', '0' );
 	}
 
 	/**
@@ -465,5 +469,6 @@ class Event {
 		];
 
 		$provider->ticket_add( $event->ID, $data );
+        add_post_meta( $event->ID, '_EventCost', $price );
 	}
 }
