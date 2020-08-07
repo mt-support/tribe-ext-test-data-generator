@@ -44,9 +44,6 @@ class Event {
 
 			if( ! empty( $args['ticket'] ) ) {
 				$this->add_ticket( $event );
-				//Clear ticket cache
-                $cache = new \Tribe__Cache();
-                $cache->delete( 'tribe_event_tickets_from_' . $event->ID );
 			}
 
 			if ( is_callable( $tick ) ) {
