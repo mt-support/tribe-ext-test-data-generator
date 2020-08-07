@@ -33,7 +33,7 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
-= [1.0.2] 2020-07-30 =
+= [1.0.3] 2020-07-30 =
 
 * Feature - Ability to create Recurring Events.
 * Feature - Option to reset TEC settings to "factory defaults".
