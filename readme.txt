@@ -5,7 +5,7 @@ Tags: events, calendar
 Requires at least: 4.9.14
 Tested up to: 5.4.2
 Requires PHP: 5.6
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,6 +32,11 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 Please create a GitHub issue inside the project.
 
 == Changelog ==
+
+= [1.0.4] TBD =
+
+* Enhancement - Add WP-CLI support for creating Virtual and Recurring events, and support for the TEC Reset functionality.
+* Feature - Add progress bar to WP-CLI functionality.
 
 = [1.0.3] 2020-07-30 =
 
