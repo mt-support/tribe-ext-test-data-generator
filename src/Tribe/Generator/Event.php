@@ -76,7 +76,7 @@ class Event {
 		$event_description = $this->generate_event_description( $event_title, $organizer_id, $venue_id );
 		$featured_image = $this->get_random_image_from_library();
         $term = wp_insert_term( 'Generated', 'tribe_events_cat' );
-        $category_id = ( get_class( $term ) == 'WP_Error' ) ? $term->get_error_data() : $term['term_id'];
+        $category_id = $term instanceof \WP_Error ? (int)$term->get_error_data() : $term['term_id'];
 		$tag = 'Automated';
 		$cost = '';
 		$currency_symbol = '';
