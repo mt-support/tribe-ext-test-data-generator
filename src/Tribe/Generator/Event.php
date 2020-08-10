@@ -77,7 +77,6 @@ class Event {
 		$featured_image = $this->get_random_image_from_library();
         $term = wp_insert_term( 'Generated', 'tribe_events_cat' );
         $category_id = ( get_class( $term ) == 'WP_Error' ) ? $term->get_error_data() : $term['term_id'];
-        $category = get_term( $category_id );
 		$tag = 'Automated';
 		$cost = '';
 		$currency_symbol = '';
@@ -92,7 +91,7 @@ class Event {
 			'timezone'           => $timezone,
 			'venue'              => $venue_id,
 			'organizer'          => $organizer_id,
-			'categories'         => [ $category ],
+			'categories'         => [ $category_id ],
             'tag'                => $tag,
 			'cost'               => $cost,
 			'currency_symbol'    => $currency_symbol,
