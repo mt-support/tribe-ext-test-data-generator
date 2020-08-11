@@ -12,7 +12,10 @@ class Event {
 	/**
 	 * Creates randomly generated Events
 	 *
-	 * @since TBD
+	 * @since 1.0.0
+     * @since 1.0.2 Added support for Virtual Events
+     * @since 1.0.3 Added support for Recurring Events
+     * @since 1.0.4 Added support for Event Category and Tag
 	 *
 	 * @param int                           $quantity The number of events to generate.
 	 * @param array<string,string|int|bool> $args     The event generation arguments.

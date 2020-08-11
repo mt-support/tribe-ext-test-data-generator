@@ -33,10 +33,11 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
-= [1.0.4] TBD =
+= [1.0.4] 2020-08-11 =
 
 * Enhancement - Add WP-CLI support for creating Virtual and Recurring events, and support for the TEC Reset functionality.
 * Feature - Add progress bar to WP-CLI functionality.
+* Feature - Add Event Category and Tag for generated events.
 * Fix - Update event cost meta after creating RSVP or Ticket so the event cost info can be displayed correctly in the calendar views.
 
 = [1.0.3] 2020-07-30 =

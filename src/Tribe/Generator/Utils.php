@@ -7,7 +7,7 @@ class Utils {
 	 * Upload random images into Media Gallery
 	 *
 	 * @since 1.0.0
-	 * @since TBD Added support for the `$tick` parameter.
+	 * @since 1.0.4 Added support for the `$tick` parameter.
 	 *
 	 * @param int                           $quantity The number of images to import to the site.
 	 * @param array<string,string|int|bool> $args     The upload arguments.
