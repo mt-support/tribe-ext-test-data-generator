@@ -36,7 +36,10 @@ class Event {
 
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$event_payload = $this->random_event_data( $from_date, $to_date, $is_virtual, $is_recurring, $recurring_type );
-			$event         = tribe_events()->set_args( $event_payload )->create();
+
+			$event = $this->granting_the_user_edit_caps( static function () use ( $event_payload ) {
+				return tribe_events()->set_args( $event_payload )->create();
+			} );
 
 			if( ! empty( $args['rsvp'] ) ) {
 				$this->add_rsvp( $event );
@@ -75,33 +78,41 @@ class Event {
 		$event_title = $this->generate_event_title();
 		$event_description = $this->generate_event_description( $event_title, $organizer_id, $venue_id );
 		$featured_image = $this->get_random_image_from_library();
-		$category = '';
+        $category_term = wp_insert_term( 'Generated', 'tribe_events_cat' );
+        $category_id = $category_term instanceof \WP_Error
+	        ? (int)$category_term->get_error_data()
+	        : $category_term['term_id'];
+		$tag_term = wp_insert_term( 'Automated', 'post_tag', [ 'slug' => 'automated-tdgext' ] );
+		$tag_id = $tag_term instanceof \WP_Error
+			? (int)$tag_term->get_error_data()
+			: $tag_term['term_id'];
 		$cost = '';
 		$currency_symbol = '';
 		$currency_position = 'prefix';
 		$event_url = '';
 
 		$random_event_data = [
-			'post_title'         => $event_title,
-			'start_date'         => $event_date['start'],
-			'end_date'           => $event_date['end'],
-			'all_day'            => $event_date['all_day'],
-			'timezone'           => $timezone,
-			'venue'              => $venue_id,
-			'organizer'          => $organizer_id,
-			'category'           => $category,
-			'cost'               => $cost,
-			'currency_symbol'    => $currency_symbol,
-			'currency_position'  => $currency_position,
-			'show_map'           => '1',
-			'show_map_link'      => '1',
-			'url'                => $event_url,
-			'featured'           => '0',
-			'post_content'       => $event_description,
-			'_thumbnail_id'      => $featured_image,
-			'post_status'        => 'publish',
-			'tribe_test_data_gen'=> '1'
-			];
+			'post_title'          => $event_title,
+			'start_date'          => $event_date['start'],
+			'end_date'            => $event_date['end'],
+			'all_day'             => $event_date['all_day'],
+			'timezone'            => $timezone,
+			'venue'               => $venue_id,
+			'organizer'           => $organizer_id,
+			'category'            => [ $category_id ],
+			'tag'                 => [ $tag_id ],
+			'cost'                => $cost,
+			'currency_symbol'     => $currency_symbol,
+			'currency_position'   => $currency_position,
+			'show_map'            => '1',
+			'show_map_link'       => '1',
+			'url'                 => $event_url,
+			'featured'            => '0',
+			'post_content'        => $event_description,
+			'_thumbnail_id'       => $featured_image,
+			'post_status'         => 'publish',
+			'tribe_test_data_gen' => '1'
+		];
 
 		if( $is_virtual ) {
 			$random_event_data = array_merge( $random_event_data, [
@@ -467,5 +478,35 @@ class Event {
 
 		$provider->ticket_add( $event->ID, $data );
         add_post_meta( $event->ID, '_EventCost', $price );
+	}
+
+	/**
+	 * Grants the user edit capabilities for the duration of a single call to, then, revoke them.
+	 *
+	 * @since 1.0.4
+	 *
+	 * @param callable $do The callback to call granting the user the edit caps.
+	 *
+	 * @return mixed The result of the callback.
+	 */
+	protected function granting_the_user_edit_caps( callable $do ) {
+		// Grant the user the capability to assign terms only in the context of this request.
+		$add_caps              = [
+			get_taxonomy( 'tribe_events_cat' )->cap->assign_terms   => true,
+			get_taxonomy( 'post_tag' )->cap->assign_terms           => true,
+			get_post_type_object( 'tribe_events' )->cap->edit_posts => true,
+			get_post_type_object( 'post' )->cap->edit_posts         => true,
+		];
+		$allow_term_assignment = static function ( array $all_caps ) use ( $add_caps ) {
+			return array_merge( $all_caps, $add_caps );
+		};
+
+		add_filter( 'user_has_cap', $allow_term_assignment );
+
+		$result = $do();
+
+		remove_filter( 'user_has_cap', $allow_term_assignment );
+
+		return $result;
 	}
 }
