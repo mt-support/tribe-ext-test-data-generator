@@ -82,7 +82,7 @@ class Event {
         $category_id = $category_term instanceof \WP_Error
 	        ? (int)$category_term->get_error_data()
 	        : $category_term['term_id'];
-		$tag_term = wp_insert_term( 'Automated', 'post_tag' );
+		$tag_term = wp_insert_term( 'Automated', 'post_tag', [ 'slug' => 'automated-tdgext' ] );
 		$tag_id = $tag_term instanceof \WP_Error
 			? (int)$tag_term->get_error_data()
 			: $tag_term['term_id'];

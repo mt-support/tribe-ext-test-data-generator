@@ -50,7 +50,7 @@ class Utils {
 			}
 
 			$category_id = get_term_by('name', 'generated', 'tribe_events_cat');
-			$tag_id = get_term_by('name', 'Automated', 'post_tag');
+			$tag_id = get_term_by('slug', 'automated-tdgext', 'post_tag');
 			if( tribe_is_truthy( $category_id ) )
 			    wp_delete_term( $category_id->term_id, 'tribe_events_cat' );
 			if( tribe_is_truthy( $tag_id ) )
