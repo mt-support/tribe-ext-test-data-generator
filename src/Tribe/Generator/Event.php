@@ -483,7 +483,7 @@ class Event {
 	/**
 	 * Grants the user edit capabilities for the duration of a single call to, then, revoke them.
 	 *
-	 * @since TBD
+	 * @since 1.0.4
 	 *
 	 * @param callable $do The callback to call granting the user the edit caps.
 	 *
