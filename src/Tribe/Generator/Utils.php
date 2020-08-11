@@ -48,6 +48,13 @@ class Utils {
 			while( tribe_events()->by( 'meta_like', 'tribe_test_data_gen' )->found() ) {
 				tribe_events()->by( 'meta_like', 'tribe_test_data_gen' )->delete();
 			}
+
+			$category_id = get_term_by('name', 'generated', 'tribe_events_cat');
+			$tag_id = get_term_by('name', 'Automated', 'post_tag');
+			if( tribe_is_truthy( $category_id ) )
+			    wp_delete_term( $category_id->term_id, 'tribe_events_cat' );
+			if( tribe_is_truthy( $tag_id ) )
+			    wp_delete_term( $tag_id->term_id, 'post_tag' );
 		}
 
 		// There's a number of things that might need updates after such a reset.
@@ -74,6 +81,13 @@ class Utils {
 			while( tribe_events()->found() ) {
 				tribe_events()->delete();
 			}
+
+			$event_categories = get_terms( array( 'taxonomy' => 'tribe_events_cat', 'hide_empty' => false, ) );
+			if( tribe_is_truthy( $event_categories ) ) {
+                foreach( $event_categories as $category ) {
+                    wp_delete_term( $category->term_id, 'tribe_events_cat' );
+                }
+            }
 		}
 
 		// There's a number of things that might need updates after such a reset.
