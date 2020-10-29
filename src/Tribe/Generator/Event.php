@@ -169,12 +169,19 @@ class Event {
 			);
 		} else {
 			$tag_term = wp_insert_term( 'Automated', 'post_tag', [ 'slug' => 'automated-tdgext' ] );
-			$tag_id = $tag_term instanceof \WP_Error
-				? (int)$tag_term->get_error_data()
-				: $tag_term['term_id'];
-			$random_event_data = array_merge( $random_event_data, [
-				'tag'                 => [ $tag_id ],
-			] );
+			
+			if ( $tag_term instanceof \WP_Error ) {
+				$tag_id = (int) $tag_term->get_error_data();
+			} else {
+				$tag_id = $tag_term['term_id'];
+			}
+				
+			$random_event_data = array_merge(
+				$random_event_data,
+				[
+					'tag' => [ $tag_id ]
+				]
+			);
 		}
 
 		if( $is_virtual ) {
