@@ -267,7 +267,7 @@ class Event {
 				$weekday = (int) $recurrence_date->format('w');
 				foreach ( $default_data['recurrence']['rules'] as $index => $rule ) {
 					$rule['custom']['week'] = [ 'day' => [ $weekday ] ];
-					$default_data['recurrence']['rules'][$index] = $rule;
+					$default_data['recurrence']['rules'][ $index ] = $rule;
 				}
 			}
 
