@@ -154,12 +154,19 @@ class Event {
 
 		if( $has_tag ) {
 			$custom_tag_term = wp_insert_term( $event_tag, 'post_tag', [ 'slug' => $event_tag ] );
-			$custom_tag_id = $custom_tag_term instanceof \WP_Error
-				? (int)$custom_tag_term->get_error_data()
-				: $custom_tag_term['term_id'];
-			$random_event_data = array_merge( $random_event_data, [
-				'tag'                 => [ $custom_tag_id ],
-			] );
+
+			if ( $custom_tag_term instanceof \WP_Error ) {
+				$custom_tag_id = (int) $custom_tag_term->get_error_data();
+			} else {
+				$custom_tag_id = $custom_tag_term['term_id'];
+			}
+				
+			$random_event_data = array_merge(
+				$random_event_data,
+				[
+					'tag' => [ $custom_tag_id ]
+				]
+			);
 		} else {
 			$tag_term = wp_insert_term( 'Automated', 'post_tag', [ 'slug' => 'automated-tdgext' ] );
 			$tag_id = $tag_term instanceof \WP_Error
