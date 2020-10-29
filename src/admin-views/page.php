@@ -42,6 +42,14 @@
                        placeholder="None" style="width: 90px">
 			</td>
 		</tr>
+        <tr>
+            <td colspan="2">
+                <p style="color: royalblue">
+                    <span style="padding-right: 10px; padding-left: 5px">ℹ</span>
+                    <em><strong>Server Time-out warning:</strong> the amount of Venues, Organizers and Events you can create are limited by this server's capabilities (available memory, processing power, etc.)<br/>Venues, Organizers and Events are generated even if the request times out. If your request times out, just navigate "Back". If you reload the page, the request will be re-sent.</em>
+                </p>
+            </td>
+        </tr>
 		<tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
 			<td colspan="2">
 				<label for="event_from_date">Create events between </label>
@@ -142,6 +150,14 @@
 					<?php submit_button( 'Upload Images' ); ?>
 				</td>
 			</tr>
+            <tr class="tribe-dependent" data-depends="#numImages" data-condition="100" style="background-color: whitesmoke">
+                <td colspan="2">
+                    <p class="tribe-dependent" data-depends="#numImages" data-condition-not="0" style="color: royalblue; background-color: whitesmoke">
+                        <span style="padding-right: 10px; padding-left: 5px">ℹ</span>
+                        <em><strong>Server Time-out warning:</strong> the amount of images that can be uploaded are limited by this server's capabilities (available memory, processing power, etc.)<br/>Images wil be uploaded even if the request times out. If your request times out, just navigate "Back". If you reload the page, the request will be re-sent.</em>
+                    </p>
+                </td>
+            </tr>
 			</tbody>
 		</table>
 	</form>
