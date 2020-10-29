@@ -13,9 +13,9 @@ class Event {
 	 * Creates randomly generated Events
 	 *
 	 * @since 1.0.0
-     * @since 1.0.2 Added support for Virtual Events
-     * @since 1.0.3 Added support for Recurring Events
-     * @since 1.0.4 Added support for Event Category and Tag
+	 * @since 1.0.2 Added support for Virtual Events
+	 * @since 1.0.3 Added support for Recurring Events
+	 * @since 1.0.4 Added support for Event Category and Tag
 	 *
 	 * @param int                           $quantity The number of events to generate.
 	 * @param array<string,string|int|bool> $args     The event generation arguments.
@@ -35,11 +35,16 @@ class Event {
 		$is_virtual     = ! empty( $args['virtual'] );
 		$is_recurring   = ! empty( $args['recurring'] );
 		$recurring_type = empty( $args['recurring_type'] ) ? 'all' : $args['recurring_type'];
+		$has_category   = ! empty( $args['add_custom_category'] ) && ! empty( $args['custom_category'] );
+		$event_category = $args['custom_category'];
+		$has_tag        = ! empty( $args['add_custom_tag'] ) && ! empty( $args['custom_tag'] );
+		$event_tag      = $args['custom_tag'];
 
 		$events         = [];
 
 		for ( $i = 1; $i <= $quantity; $i++ ) {
-			$event_payload = $this->random_event_data( $from_date, $to_date, $is_featured, $is_virtual, $is_recurring, $recurring_type );
+			$event_payload = $this->random_event_data( $from_date, $to_date, $is_featured, $is_virtual,
+				$is_recurring, $recurring_type, $has_category, $event_category, $has_tag, $event_tag );
 
 			$event = $this->granting_the_user_edit_caps( static function () use ( $event_payload ) {
 				return tribe_events()->set_args( $event_payload )->create();
@@ -71,10 +76,17 @@ class Event {
 	 * @param boolean $is_virtual
 	 * @param boolean $is_recurring
 	 * @param string $recurring_type
+	 * @param boolean $has_category
+	 * @param boolean $has_tag
+	 * @param string $event_category
+	 * @param string $event_tag
 	 * @since 1.0.0
+	 * @since 1.0.5 Added Custom Event Category and Tag functionality
 	 * @return string[]
 	 */
-	public function random_event_data( $from_date, $to_date, $is_featured, $is_virtual, $is_recurring, $recurring_type ) {
+	public function random_event_data( $from_date, $to_date, $is_featured, $is_virtual,
+									   $is_recurring, $recurring_type, $has_category,
+									   $event_category, $has_tag, $event_tag ) {
 		$event_date = $this->generate_event_date_data( $from_date, $to_date );
 		$venue_id = $this->get_random_venue();
 		$organizer_id = $this->get_random_organizer();
@@ -82,14 +94,6 @@ class Event {
 		$event_title = $this->generate_event_title();
 		$event_description = $this->generate_event_description( $event_title, $organizer_id, $venue_id );
 		$featured_image = $this->get_random_image_from_library();
-        $category_term = wp_insert_term( 'Generated', 'tribe_events_cat' );
-        $category_id = $category_term instanceof \WP_Error
-	        ? (int)$category_term->get_error_data()
-	        : $category_term['term_id'];
-		$tag_term = wp_insert_term( 'Automated', 'post_tag', [ 'slug' => 'automated-tdgext' ] );
-		$tag_id = $tag_term instanceof \WP_Error
-			? (int)$tag_term->get_error_data()
-			: $tag_term['term_id'];
 		$cost = '';
 		$currency_symbol = '';
 		$currency_position = 'prefix';
@@ -103,8 +107,6 @@ class Event {
 			'timezone'            => $timezone,
 			'venue'               => $venue_id,
 			'organizer'           => $organizer_id,
-			'category'            => [ $category_id ],
-			'tag'                 => [ $tag_id ],
 			'cost'                => $cost,
 			'currency_symbol'     => $currency_symbol,
 			'currency_position'   => $currency_position,
@@ -117,6 +119,70 @@ class Event {
 			'post_status'         => 'publish',
 			'tribe_test_data_gen' => '1'
 		];
+
+		if( $has_category ) {
+			$custom_category_term = wp_insert_term( $event_category, 'tribe_events_cat' );
+
+			if ( $custom_category_term instanceof \WP_Error ) {
+				$custom_category_id = (int) $custom_category_term->get_error_data();
+			} else {
+				$custom_category_id = $custom_category_term['term_id'];
+			}
+				
+			$random_event_data = array_merge(
+				$random_event_data,
+				[
+					'category' => [ $custom_category_id ]
+				]
+			);
+		} else {
+			$category_term = wp_insert_term( 'Generated', 'tribe_events_cat' );
+
+			if ( $category_term instanceof \WP_Error ) {
+				$category_id = (int) $category_term->get_error_data();
+			} else {
+				$category_id = $category_term['term_id'];
+			}
+				
+			$random_event_data = array_merge(
+				$random_event_data,
+				[
+					'category' => [ $category_id ]
+				]
+			);
+		}
+
+		if( $has_tag ) {
+			$custom_tag_term = wp_insert_term( $event_tag, 'post_tag', [ 'slug' => $event_tag ] );
+
+			if ( $custom_tag_term instanceof \WP_Error ) {
+				$custom_tag_id = (int) $custom_tag_term->get_error_data();
+			} else {
+				$custom_tag_id = $custom_tag_term['term_id'];
+			}
+				
+			$random_event_data = array_merge(
+				$random_event_data,
+				[
+					'tag' => [ $custom_tag_id ]
+				]
+			);
+		} else {
+			$tag_term = wp_insert_term( 'Automated', 'post_tag', [ 'slug' => 'automated-tdgext' ] );
+			
+			if ( $tag_term instanceof \WP_Error ) {
+				$tag_id = (int) $tag_term->get_error_data();
+			} else {
+				$tag_id = $tag_term['term_id'];
+			}
+				
+			$random_event_data = array_merge(
+				$random_event_data,
+				[
+					'tag' => [ $tag_id ]
+				]
+			);
+		}
 
 		if( $is_virtual ) {
 			$random_event_data = array_merge( $random_event_data, [
@@ -168,45 +234,45 @@ class Event {
 			$count = $this->get_recurrence_count( $type );
 			$recurrence_date = Dates::build_date_object( $event_date['start'] );
 
-            $default_data = [
-                'recurrence' => [
-                    'rules'  => [
-                        [
-                            'type'   => $type,
-                            'custom' => [
-                                'same-time'  => 'yes',
-                                'interval'   => '1'
-                            ],
-                            'end-type'       => 'After',
-                            'end-count'      => $count
-                        ],
-                    ],
-                    'exclusions' => [],
-                    'description' => ""
-                ]
-            ];
+			$default_data = [
+				'recurrence' => [
+					'rules'  => [
+						[
+							'type'   => $type,
+							'custom' => [
+								'same-time'  => 'yes',
+								'interval'   => '1'
+							],
+							'end-type'       => 'After',
+							'end-count'      => $count
+						],
+					],
+					'exclusions' => [],
+					'description' => ""
+				]
+			];
 
-            if ( 'Yearly' === $type )  {
-                $month = $recurrence_date->format('n');
-                foreach ( $default_data['recurrence']['rules'] as $index => $rule ) {
-                    $rule['custom']['year'] = [
-                        'month'    => [ $month ],
-                        'same-day' => 'yes'
-                    ];
-                    $default_data['recurrence']['rules'][$index] = $rule;
-                }
-            }
+			if ( 'Yearly' === $type )  {
+				$month = $recurrence_date->format('n');
+				foreach ( $default_data['recurrence']['rules'] as $index => $rule ) {
+					$rule['custom']['year'] = [
+						'month'    => [ $month ],
+						'same-day' => 'yes'
+					];
+					$default_data['recurrence']['rules'][ $index ] = $rule;
+				}
+			}
 
-            if ( 'Weekly' === $type ) {
-                $weekday = (int) $recurrence_date->format('w');
-                foreach ( $default_data['recurrence']['rules'] as $index => $rule ) {
-                    $rule['custom']['week'] = [ 'day' => [ $weekday ] ];
-                    $default_data['recurrence']['rules'][$index] = $rule;
-                }
-            }
+			if ( 'Weekly' === $type ) {
+				$weekday = (int) $recurrence_date->format('w');
+				foreach ( $default_data['recurrence']['rules'] as $index => $rule ) {
+					$rule['custom']['week'] = [ 'day' => [ $weekday ] ];
+					$default_data['recurrence']['rules'][ $index ] = $rule;
+				}
+			}
 
-            $random_event_data = array_merge( $random_event_data, $default_data );
-        }
+			$random_event_data = array_merge( $random_event_data, $default_data );
+		}
 
 		return $random_event_data;
 	}
@@ -440,7 +506,7 @@ class Event {
 		];
 
 		tribe( 'tickets.rsvp' )->ticket_add( $event->ID, $data );
-        add_post_meta( $event->ID, '_EventCost', '0' );
+		add_post_meta( $event->ID, '_EventCost', '0' );
 	}
 
 	/**
@@ -481,7 +547,7 @@ class Event {
 		];
 
 		$provider->ticket_add( $event->ID, $data );
-        add_post_meta( $event->ID, '_EventCost', $price );
+		add_post_meta( $event->ID, '_EventCost', $price );
 	}
 
 	/**

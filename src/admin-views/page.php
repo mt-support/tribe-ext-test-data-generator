@@ -70,6 +70,26 @@
                 <label for="mark_featured">Make them Featured events.</label>
             </td>
         </tr>
+        <tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
+            <td>
+                <input type="checkbox" id='add_custom_category' name='tribe-ext-test-data-generator[events][add_custom_category]'/>
+                <label for="add_custom_category">Custom Event Category.</label>
+            </td>
+            <td class="tribe-dependent" data-depends="#add_custom_category" data-condition-is-checked="true" style="background-color: whitesmoke">
+                <label for="custom_category">Event Category: </label>
+                <input type="text" id='custom_category' name='tribe-ext-test-data-generator[events][custom_category]'
+                       placeholder="Category name" style="width: 130px">
+        </tr>
+        <tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
+            <td>
+                <input type="checkbox" id='add_custom_tag' name='tribe-ext-test-data-generator[events][add_custom_tag]'/>
+                <label for="add_custom_tag">Custom Tag.</label>
+            </td>
+            <td class="tribe-dependent" data-depends="#add_custom_tag" data-condition-is-checked="true" style="background-color: whitesmoke">
+                <label for="custom_tag">Tag: </label>
+                <input type="text" id='custom_tag' name='tribe-ext-test-data-generator[events][custom_tag]'
+                       placeholder="Tag name" style="width: 130px">
+        </tr>
         <?php if( class_exists( 'Tribe\Events\Virtual\Plugin' ) ) : ?>
             <tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
                 <td colspan="2">
