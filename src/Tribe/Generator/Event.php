@@ -122,12 +122,19 @@ class Event {
 
 		if( $has_category ) {
 			$custom_category_term = wp_insert_term( $event_category, 'tribe_events_cat' );
-			$custom_category_id = $custom_category_term instanceof \WP_Error
-				? (int)$custom_category_term->get_error_data()
-				: $custom_category_term['term_id'];
-			$random_event_data = array_merge( $random_event_data, [
-				'category'            => [ $custom_category_id ]
-			] );
+
+			if ( $custom_category_term instanceof \WP_Error ) {
+				$custom_category_id = (int) $custom_category_term->get_error_data();
+			} else {
+				$custom_category_id = $custom_category_term['term_id'];
+			}
+				
+			$random_event_data = array_merge(
+				$random_event_data,
+				[
+					'category' => [ $custom_category_id ]
+				]
+			);
 		} else {
 			$category_term = wp_insert_term( 'Generated', 'tribe_events_cat' );
 			$category_id = $category_term instanceof \WP_Error
