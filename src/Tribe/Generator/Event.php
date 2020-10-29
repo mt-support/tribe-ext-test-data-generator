@@ -259,7 +259,7 @@ class Event {
 						'month'    => [ $month ],
 						'same-day' => 'yes'
 					];
-					$default_data['recurrence']['rules'][$index] = $rule;
+					$default_data['recurrence']['rules'][ $index ] = $rule;
 				}
 			}
 
