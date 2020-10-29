@@ -31,6 +31,7 @@ class Event {
 	public function create( $quantity = 1, array $args = [], callable $tick = null ) {
 		$from_date      = empty( $args['from_date'] ) ? '-1 month' : $args['from_date'];
 		$to_date        = empty( $args['to_date'] ) ? '+1 month' : $args['to_date'];
+		$is_featured    = ! empty( $args['featured'] );
 		$is_virtual     = ! empty( $args['virtual'] );
 		$is_recurring   = ! empty( $args['recurring'] );
 		$recurring_type = empty( $args['recurring_type'] ) ? 'all' : $args['recurring_type'];
@@ -38,7 +39,7 @@ class Event {
 		$events         = [];
 
 		for ( $i = 1; $i <= $quantity; $i++ ) {
-			$event_payload = $this->random_event_data( $from_date, $to_date, $is_virtual, $is_recurring, $recurring_type );
+			$event_payload = $this->random_event_data( $from_date, $to_date, $is_featured, $is_virtual, $is_recurring, $recurring_type );
 
 			$event = $this->granting_the_user_edit_caps( static function () use ( $event_payload ) {
 				return tribe_events()->set_args( $event_payload )->create();
@@ -73,7 +74,7 @@ class Event {
 	 * @since 1.0.0
 	 * @return string[]
 	 */
-	public function random_event_data( $from_date, $to_date, $is_virtual, $is_recurring, $recurring_type ) {
+	public function random_event_data( $from_date, $to_date, $is_featured, $is_virtual, $is_recurring, $recurring_type ) {
 		$event_date = $this->generate_event_date_data( $from_date, $to_date );
 		$venue_id = $this->get_random_venue();
 		$organizer_id = $this->get_random_organizer();
@@ -110,7 +111,7 @@ class Event {
 			'show_map'            => '1',
 			'show_map_link'       => '1',
 			'url'                 => $event_url,
-			'featured'            => '0',
+			'featured'            => $is_featured,
 			'post_content'        => $event_description,
 			'_thumbnail_id'       => $featured_image,
 			'post_status'         => 'publish',
