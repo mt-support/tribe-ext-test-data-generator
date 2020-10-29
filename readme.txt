@@ -5,7 +5,7 @@ Tags: events, calendar
 Requires at least: 4.9.14
 Tested up to: 5.4.2
 Requires PHP: 5.6
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,6 +32,13 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 Please create a GitHub issue inside the project.
 
 == Changelog ==
+
+= [1.0.5] 2020-10-29 =
+
+* Enhancement - Display request time-out warning across the UI, to let users know which requests may time-out and next steps.
+* Feature - Add option to generate events marked as "Featured event".
+* Feature - Add custom Event Category for generated events.
+* Feature - Add custom Tag for generated events.
 
 = [1.0.4] 2020-08-11 =
 
