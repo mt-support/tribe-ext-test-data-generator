@@ -56,6 +56,12 @@
                         <br/>Start typing in fields for suggestions of commonly used ranges.</em></p>
             </td>
 		</tr>
+        <tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
+            <td colspan="2">
+                <input type="checkbox" id='mark_featured' name='tribe-ext-test-data-generator[events][featured]'/>
+                <label for="mark_featured">Make them Featured events.</label>
+            </td>
+        </tr>
         <?php if( class_exists( 'Tribe\Events\Virtual\Plugin' ) ) : ?>
             <tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
                 <td colspan="2">
