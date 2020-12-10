@@ -29,17 +29,16 @@ class Event {
 	 *                                         creation.
 	 */
 	public function create( $quantity = 1, array $args = [], callable $tick = null ) {
-		$from_date      = empty( $args['from_date'] ) ? '-1 month' : $args['from_date'];
-		$to_date        = empty( $args['to_date'] ) ? '+1 month' : $args['to_date'];
+		$from_date      = ! empty( $args['from_date'] ) ? $args['from_date'] : '-1 month';
+		$to_date        = ! empty( $args['to_date'] ) ? $args['to_date'] : '+1 month';
 		$is_featured    = ! empty( $args['featured'] );
 		$is_virtual     = ! empty( $args['virtual'] );
 		$is_recurring   = ! empty( $args['recurring'] );
-		$recurring_type = empty( $args['recurring_type'] ) ? 'all' : $args['recurring_type'];
+		$recurring_type = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
 		$has_category   = ! empty( $args['add_custom_category'] ) && ! empty( $args['custom_category'] );
-		$event_category = $args['custom_category'];
+		$event_category = ( $has_category && ! empty( $args['custom_category'] ) ) ? $args['custom_category'] : '';
 		$has_tag        = ! empty( $args['add_custom_tag'] ) && ! empty( $args['custom_tag'] );
-		$event_tag      = $args['custom_tag'];
-
+		$event_tag      = ( $has_tag && ! empty( $args['custom_tag'] ) ) ? $args['custom_tag'] : '';
 		$events         = [];
 
 		for ( $i = 1; $i <= $quantity; $i++ ) {
@@ -128,7 +127,7 @@ class Event {
 			} else {
 				$custom_category_id = $custom_category_term['term_id'];
 			}
-				
+
 			$random_event_data = array_merge(
 				$random_event_data,
 				[
@@ -143,7 +142,7 @@ class Event {
 			} else {
 				$category_id = $category_term['term_id'];
 			}
-				
+
 			$random_event_data = array_merge(
 				$random_event_data,
 				[
@@ -160,7 +159,7 @@ class Event {
 			} else {
 				$custom_tag_id = $custom_tag_term['term_id'];
 			}
-				
+
 			$random_event_data = array_merge(
 				$random_event_data,
 				[
@@ -169,13 +168,13 @@ class Event {
 			);
 		} else {
 			$tag_term = wp_insert_term( 'Automated', 'post_tag', [ 'slug' => 'automated-tdgext' ] );
-			
+
 			if ( $tag_term instanceof \WP_Error ) {
 				$tag_id = (int) $tag_term->get_error_data();
 			} else {
 				$tag_id = $tag_term['term_id'];
 			}
-				
+
 			$random_event_data = array_merge(
 				$random_event_data,
 				[
@@ -405,7 +404,7 @@ class Event {
 	 * @return string
 	 */
 	public function determine_timezone( $venue_id ) {
-		$venue_state = get_post_meta( $venue_id, '_VenueState' )[0];
+		$venue_state = get_post_meta( $venue_id, '_VenueState' );
 		$timezone = 'America/New_York';
 		switch( $venue_state ) {
 			case 'California':
@@ -457,7 +456,7 @@ class Event {
 		$faker = Factory::create();
 		$venue = tribe_venues()->by( 'ID', $venue_id )->first();
 		$venue_name = empty( $venue ) ? 'The Venue' : $venue->post_title;
-		$venue_meta_city = get_post_meta( $venue_id )['_VenueCity'][0];
+		$venue_meta_city = tribe_get_city($venue_id);//get_post_meta( $venue_id )['_VenueCity'];
 		$venue_city = empty( $venue_meta_city ) ? 'your city' : $venue_meta_city;
 		$organizer = tribe_organizers()->by( 'ID', $organizer_id )->first();
 		$organizer_name = empty( $organizer ) ? 'a Premium Organizer' : $organizer->post_title;
