@@ -33,6 +33,10 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Generating events without a custom category will no longer throw warnings/errors.
+
 = [1.0.5] 2020-10-29 =
 
 * Enhancement - Display request time-out warning across the UI, to let users know which requests may time-out and next steps.
