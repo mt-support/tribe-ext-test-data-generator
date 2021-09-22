@@ -36,9 +36,9 @@ class Event {
 		$is_recurring   = ! empty( $args['recurring'] );
 		$recurring_type = empty( $args['recurring_type'] ) ? 'all' : $args['recurring_type'];
 		$has_category   = ! empty( $args['add_custom_category'] ) && ! empty( $args['custom_category'] );
-		$event_category = $args['custom_category'];
+		$event_category = isset( $args['custom_category'] ) ? $args['custom_category'] : null;
 		$has_tag        = ! empty( $args['add_custom_tag'] ) && ! empty( $args['custom_tag'] );
-		$event_tag      = $args['custom_tag'];
+		$event_tag      = isset( $args['custom_tag'] ) ? $args['custom_tag'] : null;
 
 		$events         = [];
 
