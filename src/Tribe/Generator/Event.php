@@ -405,9 +405,10 @@ class Event {
 	 * @return string
 	 */
 	public function determine_timezone( $venue_id ) {
-		$venue_state = get_post_meta( $venue_id, '_VenueState' )[0];
-		$timezone = 'America/New_York';
-		switch( $venue_state ) {
+		$venue_state = get_post_meta( $venue_id, '_VenueState' );
+		$venue       = isset( $venue_state[0] ) ? $venue_state[0] : null;
+		$timezone    = 'America/New_York';
+		switch ( $venue ) {
 			case 'California':
 				$timezone = 'America/Los_Angeles';
 				break;
@@ -415,6 +416,7 @@ class Event {
 				$timezone = 'America/Chicago';
 				break;
 		}
+
 		return $timezone;
 	}
 
@@ -454,13 +456,13 @@ class Event {
 	 * @return string
 	 */
 	public function generate_event_description( $event_title, $organizer_id, $venue_id ) {
-		$faker = Factory::create();
-		$venue = tribe_venues()->by( 'ID', $venue_id )->first();
-		$venue_name = empty( $venue ) ? 'The Venue' : $venue->post_title;
-		$venue_meta_city = get_post_meta( $venue_id )['_VenueCity'][0];
-		$venue_city = empty( $venue_meta_city ) ? 'your city' : $venue_meta_city;
-		$organizer = tribe_organizers()->by( 'ID', $organizer_id )->first();
-		$organizer_name = empty( $organizer ) ? 'a Premium Organizer' : $organizer->post_title;
+		$faker           = Factory::create();
+		$venue           = tribe_venues()->by( 'ID', $venue_id )->first();
+		$venue_name      = empty( $venue ) ? 'The Venue' : $venue->post_title;
+		$venue_meta_city = get_post_meta( $venue_id ) ? get_post_meta( $venue_id )['_VenueCity'][0] : '';
+		$venue_city      = empty( $venue_meta_city ) ? 'your city' : $venue_meta_city;
+		$organizer       = tribe_organizers()->by( 'ID', $organizer_id )->first();
+		$organizer_name  = empty( $organizer ) ? 'a Premium Organizer' : $organizer->post_title;
 		gc_collect_cycles();
 
 		$description =
