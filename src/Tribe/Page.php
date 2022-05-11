@@ -84,7 +84,17 @@ class Page {
 	 * @since 1.0.0
 	 */
 	public function add_menu() {
-		$parent = class_exists( 'Tribe__Events__Main' ) ? Tribe__Settings::$parent_page : Tribe__Settings::$parent_slug;
+		if ( class_exists( 'Tribe__Events__Main' ) ) {
+			$parent = add_query_arg(
+				[
+					'post_type' => \Tribe__Events__Main::POSTTYPE,
+				],
+				Tribe__Settings::$parent_page
+			);
+		} elseif ( class_exists( 'Tribe__Tickets__Main' ) ) {
+			$parent = \Tribe\Tickets\Admin\Settings::$parent_slug;
+		}
+
 		$this->menu_hook = add_submenu_page(
 			$parent,
 			__( 'Test Data Generator', 'tribe-ext-test-data-generator' ),
