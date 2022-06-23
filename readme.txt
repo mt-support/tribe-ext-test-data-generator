@@ -33,9 +33,15 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
+= [1.0.7] TBD =
+
+* Fix - Ensure `_EventDuration` meta of generated Events is set to the correct value.
+* Enhancement - Add support for the `-fast-occurrences-insertion` option to insert Recurring Events occurrences in the database directly.
+
 = [1.0.6] 2022-06-01 =
 
 * Enhancement - Add support for Tickets Menu.
+* Fix - Generating events without a custom category will no longer throw warnings/errors.
 
 = [1.0.5] 2020-10-29 =
 

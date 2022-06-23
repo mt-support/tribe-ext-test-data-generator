@@ -41,19 +41,18 @@ class Event {
 	 *                                         creation.
 	 */
 	public function create( $quantity = 1, array $args = [], callable $tick = null ) {
-		$from_date      = empty( $args['from_date'] ) ? '-1 month' : $args['from_date'];
-		$to_date        = empty( $args['to_date'] ) ? '+1 month' : $args['to_date'];
+		$from_date      = ! empty( $args['from_date'] ) ? $args['from_date'] : '-1 month';
+		$to_date        = ! empty( $args['to_date'] ) ? $args['to_date'] : '+1 month';
 		$is_featured    = ! empty( $args['featured'] );
 		$is_virtual     = ! empty( $args['virtual'] );
 		$is_recurring   = ! empty( $args['recurring'] );
-		$recurring_type = empty( $args['recurring_type'] ) ? 'all' : $args['recurring_type'];
+		$recurring_type = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
 		$has_category   = ! empty( $args['add_custom_category'] ) && ! empty( $args['custom_category'] );
 		$event_category = isset( $args['custom_category'] ) ? $args['custom_category'] : null;
 		$has_tag        = ! empty( $args['add_custom_tag'] ) && ! empty( $args['custom_tag'] );
 		$event_tag      = isset( $args['custom_tag'] ) ? $args['custom_tag'] : null;
-		$fast_occurrences_insert = $args['fastOccurrencesInsert'] ?? false;
-
 		$events         = [];
+		$fast_occurrences_insert = $args['fastOccurrencesInsert'] ?? false;
 
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$event_payload = $this->random_event_data( $from_date, $to_date, $is_featured, $is_virtual,
@@ -426,9 +425,8 @@ class Event {
 	 */
 	public function determine_timezone( $venue_id ) {
 		$venue_state = get_post_meta( $venue_id, '_VenueState' );
-		$venue       = isset( $venue_state[0] ) ? $venue_state[0] : null;
-		$timezone    = 'America/New_York';
-		switch ( $venue ) {
+		$timezone = 'America/New_York';
+		switch( $venue_state ) {
 			case 'California':
 				$timezone = 'America/Los_Angeles';
 				break;
