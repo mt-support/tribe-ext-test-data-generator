@@ -33,7 +33,7 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
-= [1.0.7] TBD =
+= [1.0.7] 2022-06-24 =
 
 * Fix - Ensure `_EventDuration` meta of generated Events is set to the correct value.
 * Enhancement - Add support for the `-fast-occurrences-insertion` option to insert Recurring Events occurrences in the database directly.
