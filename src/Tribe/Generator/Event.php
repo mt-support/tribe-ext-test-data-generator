@@ -2,12 +2,24 @@
 namespace Tribe\Extensions\Test_Data_Generator\Generator;
 
 use DateInterval;
+use DateTimeZone;
 use Faker\Factory;
+use tad\WPBrowser\Generators\Date;
 use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__RSVP;
+use Tribe__Timezones as Timezones;
+use WP_Post;
 use WP_Query;
 
 class Event {
+	/**
+	 * Whether database transactions are enabled or not.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private static $post_transaction_supported;
 
 	/**
 	 * Creates randomly generated Events
@@ -36,17 +48,41 @@ class Event {
 		$is_recurring   = ! empty( $args['recurring'] );
 		$recurring_type = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
 		$has_category   = ! empty( $args['add_custom_category'] ) && ! empty( $args['custom_category'] );
-		$event_category = ( $has_category && ! empty( $args['custom_category'] ) ) ? $args['custom_category'] : '';
+		$event_category = isset( $args['custom_category'] ) ? $args['custom_category'] : null;
 		$has_tag        = ! empty( $args['add_custom_tag'] ) && ! empty( $args['custom_tag'] );
-		$event_tag      = ( $has_tag && ! empty( $args['custom_tag'] ) ) ? $args['custom_tag'] : '';
+		$event_tag      = isset( $args['custom_tag'] ) ? $args['custom_tag'] : null;
 		$events         = [];
+		$fast_occurrences_insert = $args['fastOccurrencesInsert'] ?? false;
 
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$event_payload = $this->random_event_data( $from_date, $to_date, $is_featured, $is_virtual,
 				$is_recurring, $recurring_type, $has_category, $event_category, $has_tag, $event_tag );
 
+			global $wpdb;
+
+			// Override the default Occurrence creation behavior with the fast one, if required.
+			if ( $fast_occurrences_insert && $this->is_post_transaction_supported() ) {
+				$wpdb->query( 'START TRANSACTION' );
+
+				add_filter( 'tec_events_pro_recurrence_update_commit', [$this,'fast_occurrence_insert'], 10, 3 );
+			}
+
 			$event = $this->granting_the_user_edit_caps( static function () use ( $event_payload ) {
-				return tribe_events()->set_args( $event_payload )->create();
+				$event_post = tribe_events()->set_args( $event_payload )->create();
+
+				if ( $event_post instanceof WP_Post ) {
+					/*
+					 * The code does not always get the duration right when the Event is generated across
+					 * daylight-saving changes; here we handle that case.
+					 */
+					$timezone = Timezones::build_timezone_object( $event_payload['timezone']
+					                                              ?? get_option( 'timezone_string' ) );
+					$real_duration = Dates::immutable( $event_payload['to_date'], $timezone )->getTimestamp()
+					                 - Dates::immutable( $event_payload['from_date'], $timezone )->getTimestamp();
+					update_post_meta( $event_post->ID, '_EventDuration', $real_duration );
+				}
+
+				return $event_post;
 			} );
 
 			if( ! empty( $args['rsvp'] ) ) {
@@ -59,6 +95,10 @@ class Event {
 
 			if ( is_callable( $tick ) ) {
 				$tick( $event );
+			}
+
+			if ( $fast_occurrences_insert && $this->is_post_transaction_supported() ) {
+				$wpdb->query( 'COMMIT' );
 			}
 
 			$events[] = $event;
@@ -128,12 +168,7 @@ class Event {
 				$custom_category_id = $custom_category_term['term_id'];
 			}
 
-			$random_event_data = array_merge(
-				$random_event_data,
-				[
-					'category' => [ $custom_category_id ]
-				]
-			);
+			$random_event_data['category'] = [ $custom_category_id ];
 		} else {
 			$category_term = wp_insert_term( 'Generated', 'tribe_events_cat' );
 
@@ -143,12 +178,7 @@ class Event {
 				$category_id = $category_term['term_id'];
 			}
 
-			$random_event_data = array_merge(
-				$random_event_data,
-				[
-					'category' => [ $category_id ]
-				]
-			);
+			$random_event_data['category'] = [ $category_id ];
 		}
 
 		if( $has_tag ) {
@@ -160,12 +190,7 @@ class Event {
 				$custom_tag_id = $custom_tag_term['term_id'];
 			}
 
-			$random_event_data = array_merge(
-				$random_event_data,
-				[
-					'tag' => [ $custom_tag_id ]
-				]
-			);
+			$random_event_data['tag'] = [ $custom_tag_id ];
 		} else {
 			$tag_term = wp_insert_term( 'Automated', 'post_tag', [ 'slug' => 'automated-tdgext' ] );
 
@@ -175,12 +200,7 @@ class Event {
 				$tag_id = $tag_term['term_id'];
 			}
 
-			$random_event_data = array_merge(
-				$random_event_data,
-				[
-					'tag' => [ $tag_id ]
-				]
-			);
+			$random_event_data['tag'] = [ $tag_id ];
 		}
 
 		if( $is_virtual ) {
@@ -288,7 +308,7 @@ class Event {
 		$all_types = [ 'Daily', 'Weekly', 'Monthly', 'Yearly' ];
 		$type = 'Daily';
 
-		if( $recurring_type == "all" ) {
+		if( $recurring_type === "all" ) {
 			$type = $faker->randomElement( $all_types );
 		} else {
 			switch( $recurring_type ) {
@@ -344,7 +364,7 @@ class Event {
 	public function generate_event_date_data( $from_date, $to_date ) {
 		$faker = Factory::create();
 		$all_day = $faker->optional(0.95, 'yes')->randomElement(['no']);
-		if ( $all_day == 'no' ) {
+		if ( $all_day === 'no' ) {
 			$start = $faker->dateTimeBetween( $from_date, $to_date );
 			$start_formatted = rand( 0, 1 ) ? $start->format( 'Y-m-d H:00' ) : $start->format( 'Y-m-d H:30' );
 			$end = rand( 0, 1 ) ? $start->add( new DateInterval( 'PT2H' ) ) : $start->add( new DateInterval( 'PT3H' ) );
@@ -414,6 +434,7 @@ class Event {
 				$timezone = 'America/Chicago';
 				break;
 		}
+
 		return $timezone;
 	}
 
@@ -453,13 +474,13 @@ class Event {
 	 * @return string
 	 */
 	public function generate_event_description( $event_title, $organizer_id, $venue_id ) {
-		$faker = Factory::create();
-		$venue = tribe_venues()->by( 'ID', $venue_id )->first();
-		$venue_name = empty( $venue ) ? 'The Venue' : $venue->post_title;
-		$venue_meta_city = tribe_get_city($venue_id);//get_post_meta( $venue_id )['_VenueCity'];
-		$venue_city = empty( $venue_meta_city ) ? 'your city' : $venue_meta_city;
-		$organizer = tribe_organizers()->by( 'ID', $organizer_id )->first();
-		$organizer_name = empty( $organizer ) ? 'a Premium Organizer' : $organizer->post_title;
+		$faker           = Factory::create();
+		$venue           = tribe_venues()->by( 'ID', $venue_id )->first();
+		$venue_name      = empty( $venue ) ? 'The Venue' : $venue->post_title;
+		$venue_meta_city = get_post_meta( $venue_id ) ? get_post_meta( $venue_id )['_VenueCity'][0] : '';
+		$venue_city      = empty( $venue_meta_city ) ? 'your city' : $venue_meta_city;
+		$organizer       = tribe_organizers()->by( 'ID', $organizer_id )->first();
+		$organizer_name  = empty( $organizer ) ? 'a Premium Organizer' : $organizer->post_title;
 		gc_collect_cycles();
 
 		$description =
@@ -494,6 +515,10 @@ class Event {
 	 * @param $event
 	 */
 	public function add_rsvp( $event ) {
+		if ( ! tribe()->isBound( 'tickets.rsvp' ) ) {
+			return;
+		}
+
 		$data = [
 			'ticket_name'             => 'Free Entrance',
 			'ticket_description'      => 'RSVP to join us!',
@@ -516,6 +541,10 @@ class Event {
 	 * @param $event
 	 */
 	public function add_ticket( $event ) {
+		if ( ! class_exists( \Tribe__Tickets__Tickets::class ) ) {
+			return;
+		}
+
 		$provider = \Tribe__Tickets__Tickets::get_event_ticket_provider( $event->ID );
 
 		// Prior to 4.12.2, ET will return a string rather than an instance.
@@ -577,5 +606,145 @@ class Event {
 		remove_filter( 'user_has_cap', $allow_term_assignment );
 
 		return $result;
+	}
+
+	/**
+	 * Returns whether transactions on the posts-related tables are supported or not.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether transactions on the posts-related tables are supported or not.
+	 */
+	private function is_post_transaction_supported(): bool {
+		if ( self::$post_transaction_supported === null ) {
+			global $wpdb;
+			$tables = [ $wpdb->posts, $wpdb->postmeta, $wpdb->term_relationships ];
+			$engines = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT TABLE_NAME, ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = %s;",
+					DB_NAME
+				),
+				ARRAY_A
+			);
+
+			self::$post_transaction_supported = count( array_filter( $engines, static function ( array $engine_info ) use ( $tables ): bool {
+					return in_array( $engine_info['TABLE_NAME'], $tables, true ) && $engine_info['ENGINE'] === 'InnoDB';
+				} ) ) === count( $tables );
+		}
+
+		return self::$post_transaction_supported;
+	}
+
+	/**
+	 * Faster Recurring Event insertion by leveraging the transaction support of the database.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool|null $commit  Whether to apply the default Occurrence save logic or not.
+	 * @param int       $post_id The ID of the Event to insert the Occurrence for.
+	 * @param array     $payload The payload defining the Occurrences to create, update and delete.
+	 *
+	 * @return bool Whether the Occurrence fast insert logic was applied or not.
+	 *
+	 * @throws \WP_CLI\ExitException If any one of the Occurrence fast insert logic steps failed.
+	 */
+	public function fast_occurrence_insert( bool $commit = null, int $post_id, array $payload ): bool {
+		if ( $commit !== null ) {
+			// Something else has already set the commit mode, so we don't need to do anything.
+			return $commit;
+		}
+
+		global $wpdb;
+		$first_post_fields = $wpdb->get_row(
+			$wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE ID = %d", $post_id ),
+			ARRAY_A
+		);
+		unset( $first_post_fields['ID'] );
+		$first_post_fields['post_parent'] = $post_id;
+		$first_post_meta = $wpdb->get_results(
+			$wpdb->prepare( "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id = %d", $post_id ),
+			ARRAY_A
+		);
+		$first_post_meta = array_filter( $first_post_meta, static function ( $meta ) {
+			return ! in_array( $meta['meta_key'], [
+				'_tribe_modified_fields',
+				'_EventStartDate',
+				'_EventEndDate',
+				'_EventStartDateUTC',
+				'_EventEndDateUTC',
+				'_EventDuration',
+				'_EventRecurrence',
+			], true );
+		} );
+		$first_terms = $wpdb->get_results(
+			$wpdb->prepare( "SELECT term_taxonomy_id, term_order FROM {$wpdb->term_relationships} WHERE object_id = %d", $post_id ),
+			ARRAY_A
+		);
+
+		// This is a new Event, there will only be Occurrences to insert.
+		$to_create = $payload['to_create'];
+		$event_timezone = Timezones::build_timezone_object( get_post_meta( $post_id, '_EventTimezone', true ) );
+		$utc = new DateTimeZone( 'UTC' );
+
+		foreach ( $to_create as $k => $occurrence ) {
+			[ $timestamp, $duration ] = array_values( $occurrence );
+			if ( ! $wpdb->insert( $wpdb->posts, $first_post_fields, array_fill( 0, count( $first_post_fields ), '%s' ) ) ) {
+				$wpdb->query( 'ROLLBACK' );
+				\WP_CLI::error( 'Failed to insert Event post fields in transaction, try again not using the -fast-occurrences-insert option.' );
+			}
+			$inserted_post_id = $wpdb->get_var( 'SELECT LAST_INSERT_ID()' );
+
+			if ( empty( $inserted_post_id ) ) {
+				$wpdb->query( 'ROLLBACK' );
+				\WP_CLI::error( 'Failed to fetch inserted post ID, try again not using the -fast-occurrences-insert option.' );
+			}
+
+			$event_meta = $first_post_meta;
+			$start = Dates::immutable( $timestamp, $utc );
+			$end = $start->add( new DateInterval( 'PT' . $duration . 'S' ) );
+			$event_meta[] = [
+				'meta_key'   => '_EventStartDate',
+				'meta_value' => $start->setTimezone( $event_timezone )->format( Dates::DBDATETIMEFORMAT )
+			];
+			$event_meta[] = [
+				'meta_key'   => '_EventEndDate',
+				'meta_value' => $end->setTimezone( $event_timezone )->format( Dates::DBDATETIMEFORMAT )
+			];
+			$utc = new DateTimeZone( 'UTC' );
+			$event_meta[] = [
+				'meta_key'   => '_EventStartDateUTC',
+				'meta_value' => $start->format( Dates::DBDATETIMEFORMAT )
+			];
+			$event_meta[] = [
+				'meta_key'   => '_EventEndDateUTC',
+				'meta_value' => $end->format( Dates::DBDATETIMEFORMAT )
+			];
+			$event_meta[] = [ 'meta_key' => '_EventDuration', 'meta_value' => $duration ];
+			foreach ( $event_meta as $meta ) {
+				$meta['post_id'] = $inserted_post_id;
+				if ( ! $wpdb->insert( $wpdb->postmeta, $meta, array_fill( 0, count( $meta ), '%s' ) ) ) {
+					$wpdb->query( 'ROLLBACK' );
+					\WP_CLI::error( 'Failed to insert Event meta in transaction, try again not using the -fast-occurrences-insert option.' );
+				}
+			}
+
+			foreach ( $first_terms as $term ) {
+				$term['object_id'] = $inserted_post_id;
+				if ( ! $wpdb->insert( $wpdb->term_relationships, $term, array_fill( 0, count( $term ), '%s' ) ) ) {
+					$wpdb->query( 'ROLLBACK' );
+					\WP_CLI::error( 'Failed to insert Event term relationships in transaction, try again not using the -fast-occurrences-insert option.' );
+				}
+			}
+		}
+
+		// Update the taxonomy counts.
+		$inserted = count( $to_create );
+		$tt_ids = implode( ',', array_map( 'absint', array_column( $first_terms, 'term_taxonomy_id' ) ) );
+		if ( ! $wpdb->query( "UPDATE {$wpdb->term_taxonomy} set count = count + {$inserted} WHERE term_taxonomy_id in ($tt_ids)" ) ) {
+			$wpdb->query( 'ROLLBACK' );
+			\WP_CLI::error( 'Failed to update the term count in transaction, try again not using the -fast-occurrences-insert option.' );
+		}
+
+		return true;
 	}
 }

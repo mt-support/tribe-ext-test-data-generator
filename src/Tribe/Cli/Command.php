@@ -31,12 +31,13 @@ class Command {
 	 * @var array<string,string>
 	 */
 	protected $events_generator_translation_map = [
-		'from-date'    => 'fromDate',
-		'to-date'      => 'toDate',
-		'with-rsvp'    => 'rsvp',
-		'with-tickets' => 'tickets',
-		'virtual'      => 'virtual',
-		'recurring'    => [ 'recurring', 'recurring_type' ]
+		'from-date'               => 'fromDate',
+		'to-date'                 => 'toDate',
+		'with-rsvp'               => 'rsvp',
+		'with-tickets'            => 'tickets',
+		'virtual'                 => 'virtual',
+		'recurring'               => [ 'recurring', 'recurring_type' ],
+		'fast-occurrences-insert' => 'fastOccurrencesInsert',
 	];
 
 	/**
@@ -111,6 +112,10 @@ class Command {
 	 *   - weekly
 	 *   - daily
 	 * ---
+	 *
+	 * [--fast-occurrences-insert]
+	 * : Whether to insert recurring Events occurrences as fast as possible or not. If this flag is set, then
+	 * recurring Events' occurrences will be inserted with a direct database query, skipping the WordPress hooks.
 	 *
 	 * ## EXAMPLES
 	 *
