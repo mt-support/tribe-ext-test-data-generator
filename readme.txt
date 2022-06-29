@@ -1,11 +1,11 @@
 === The Events Calendar Extension: Test Data Generator ===
-Contributors: ModernTribe, aguseo, bordoni, Camwyn, lirianojoel, lucatume
+Contributors: theeventscalendar, aguseo, bordoni, Camwyn, lirianojoel, lucatume
 Donate link: http://evnt.is/29
 Tags: events, calendar
-Requires at least: 4.9.14
+Requires at least: 5.6
 Tested up to: 6.0
 Requires PHP: 7.1
-Stable tag: 1.0.6
+Stable tag: 1.0.8
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,6 +32,10 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 Please create a GitHub issue inside the project.
 
 == Changelog ==
+
+= [1.0.8] 2022-06-29 =
+
+* Fix - An undefined index error was occurring when generating events.
 
 = [1.0.7] 2022-06-24 =
 
