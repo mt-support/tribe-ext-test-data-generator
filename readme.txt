@@ -33,6 +33,10 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
+= [1.0.8] 2022-06-29 =
+
+* Fix - An undefined index error was occurring when generating events.
+
 = [1.0.7] 2022-06-24 =
 
 * Fix - Ensure `_EventDuration` meta of generated Events is set to the correct value.

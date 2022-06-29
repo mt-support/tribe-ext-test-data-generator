@@ -77,8 +77,9 @@ class Event {
 					 */
 					$timezone = Timezones::build_timezone_object( $event_payload['timezone']
 					                                              ?? get_option( 'timezone_string' ) );
-					$real_duration = Dates::immutable( $event_payload['to_date'], $timezone )->getTimestamp()
-					                 - Dates::immutable( $event_payload['from_date'], $timezone )->getTimestamp();
+				$real_duration = Dates::immutable( $event_payload['end_date'], $timezone )->getTimestamp()
+
+					                 - Dates::immutable( $event_payload['start_date'], $timezone )->getTimestamp();
 					update_post_meta( $event_post->ID, '_EventDuration', $real_duration );
 				}
 
