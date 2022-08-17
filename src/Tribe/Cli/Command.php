@@ -38,6 +38,8 @@ class Command {
 		'virtual'                 => 'virtual',
 		'recurring'               => [ 'recurring', 'recurring_type' ],
 		'fast-occurrences-insert' => 'fastOccurrencesInsert',
+		'category'                => 'event_category',
+		'tag'                     => 'event_tag',
 	];
 
 	/**
@@ -113,6 +115,12 @@ class Command {
 	 *   - daily
 	 * ---
 	 *
+	 * [--category=<category>]
+	 * : A comma-separated list of categories to assign to the generated Events.
+	 *
+	 * [--tag=<tag>]
+	 * : A comma-separated list of tags to assign to the generated Events.
+	 *
 	 * [--fast-occurrences-insert]
 	 * : Whether to insert recurring Events occurrences as fast as possible or not. If this flag is set, then
 	 * recurring Events' occurrences will be inserted with a direct database query, skipping the WordPress hooks.
@@ -130,6 +138,10 @@ class Command {
 	 *     wp tec-test-data events generate 23 --recurring
 	 *     wp tec-test-data events generate 23 --recurring=all
 	 *     wp tec-test-data events generate 23 --recurring=weekly
+	 *     wp tec-test-data events generate 23 --category=party
+	 *     wp tec-test-data events generate 23 --category=party,concert
+	 *     wp tec-test-data events generate 23 --tag=fun
+	 *     wp tec-test-data events generate 23 --tag=fun,hiking
 	 *
 	 * @when after_wp_load
 	 */

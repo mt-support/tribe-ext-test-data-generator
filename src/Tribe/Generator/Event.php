@@ -4,12 +4,12 @@ namespace Tribe\Extensions\Test_Data_Generator\Generator;
 use DateInterval;
 use DateTimeZone;
 use Faker\Factory;
-use tad\WPBrowser\Generators\Date;
 use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__RSVP;
 use Tribe__Timezones as Timezones;
 use WP_Post;
 use WP_Query;
+use Tribe__Utils__Array as Arr;
 
 class Event {
 	/**
@@ -47,16 +47,20 @@ class Event {
 		$is_virtual     = ! empty( $args['virtual'] );
 		$is_recurring   = ! empty( $args['recurring'] );
 		$recurring_type = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
-		$has_category   = ! empty( $args['add_custom_category'] ) && ! empty( $args['custom_category'] );
-		$event_category = isset( $args['custom_category'] ) ? $args['custom_category'] : null;
-		$has_tag        = ! empty( $args['add_custom_tag'] ) && ! empty( $args['custom_tag'] );
-		$event_tag      = isset( $args['custom_tag'] ) ? $args['custom_tag'] : null;
+		$event_category = array_merge(
+			(array)( $args['custom_category'] ?? [] ),
+			( $args['event_category'] ? Arr::list_to_array( $args['event_category'] ) : [] )
+		);
+		$event_tag = array_merge(
+			(array)( $args['custom_tag'] ?? [] ),
+			( $args['event_tag'] ? Arr::list_to_array( $args['event_tag'] ) : [] )
+		);
 		$events         = [];
 		$fast_occurrences_insert = $args['fastOccurrencesInsert'] ?? false;
 
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$event_payload = $this->random_event_data( $from_date, $to_date, $is_featured, $is_virtual,
-				$is_recurring, $recurring_type, $has_category, $event_category, $has_tag, $event_tag );
+				$is_recurring, $recurring_type, $event_category, $event_tag );
 
 			global $wpdb;
 
@@ -77,8 +81,8 @@ class Event {
 					 */
 					$timezone = Timezones::build_timezone_object( $event_payload['timezone']
 					                                              ?? get_option( 'timezone_string' ) );
-					$real_duration = Dates::immutable( $event_payload['to_date'], $timezone )->getTimestamp()
-					                 - Dates::immutable( $event_payload['from_date'], $timezone )->getTimestamp();
+					$real_duration = Dates::immutable( $event_payload['start_date'], $timezone )->getTimestamp()
+					                 - Dates::immutable( $event_payload['end_date'], $timezone )->getTimestamp();
 					update_post_meta( $event_post->ID, '_EventDuration', $real_duration );
 				}
 
@@ -115,17 +119,17 @@ class Event {
 	 * @param boolean $is_virtual
 	 * @param boolean $is_recurring
 	 * @param string $recurring_type
-	 * @param boolean $has_category
-	 * @param boolean $has_tag
 	 * @param string $event_category
 	 * @param string $event_tag
 	 * @since 1.0.0
 	 * @since 1.0.5 Added Custom Event Category and Tag functionality
 	 * @return string[]
 	 */
-	public function random_event_data( $from_date, $to_date, $is_featured, $is_virtual,
-									   $is_recurring, $recurring_type, $has_category,
-									   $event_category, $has_tag, $event_tag ) {
+	public function random_event_data(
+		$from_date, $to_date, $is_featured, $is_virtual,
+		$is_recurring, $recurring_type,
+		$event_category, $event_tag
+	) {
 		$event_date = $this->generate_event_date_data( $from_date, $to_date );
 		$venue_id = $this->get_random_venue();
 		$organizer_id = $this->get_random_organizer();
@@ -159,49 +163,10 @@ class Event {
 			'tribe_test_data_gen' => '1'
 		];
 
-		if( $has_category ) {
-			$custom_category_term = wp_insert_term( $event_category, 'tribe_events_cat' );
-
-			if ( $custom_category_term instanceof \WP_Error ) {
-				$custom_category_id = (int) $custom_category_term->get_error_data();
-			} else {
-				$custom_category_id = $custom_category_term['term_id'];
-			}
-
-			$random_event_data['category'] = [ $custom_category_id ];
-		} else {
-			$category_term = wp_insert_term( 'Generated', 'tribe_events_cat' );
-
-			if ( $category_term instanceof \WP_Error ) {
-				$category_id = (int) $category_term->get_error_data();
-			} else {
-				$category_id = $category_term['term_id'];
-			}
-
-			$random_event_data['category'] = [ $category_id ];
-		}
-
-		if( $has_tag ) {
-			$custom_tag_term = wp_insert_term( $event_tag, 'post_tag', [ 'slug' => $event_tag ] );
-
-			if ( $custom_tag_term instanceof \WP_Error ) {
-				$custom_tag_id = (int) $custom_tag_term->get_error_data();
-			} else {
-				$custom_tag_id = $custom_tag_term['term_id'];
-			}
-
-			$random_event_data['tag'] = [ $custom_tag_id ];
-		} else {
-			$tag_term = wp_insert_term( 'Automated', 'post_tag', [ 'slug' => 'automated-tdgext' ] );
-
-			if ( $tag_term instanceof \WP_Error ) {
-				$tag_id = (int) $tag_term->get_error_data();
-			} else {
-				$tag_id = $tag_term['term_id'];
-			}
-
-			$random_event_data['tag'] = [ $tag_id ];
-		}
+		$event_category = $event_category ? (array) $event_category : [ 'Generated' ];
+		$event_tag = $event_tag ? (array) $event_tag : [ 'Automated' ];
+		$random_event_data['category'] = $this->upsert_tax_terms( $event_category, 'tribe_events_cat' );
+		$random_event_data['tag'] = $this->upsert_tax_terms( $event_tag, 'post_tag' );
 
 		if( $is_virtual ) {
 			$random_event_data = array_merge( $random_event_data, [
@@ -746,5 +711,30 @@ class Event {
 		}
 
 		return true;
+	}
+
+	private function upsert_tax_terms( array $terms, string $taxonomy ): array {
+		$ids = [];
+
+		if ( ! count( $terms ) ) {
+			return [];
+		}
+
+		foreach ( $terms as $term ) {
+			if ( ( $existing = get_term_by( 'name', $term, $taxonomy ) ) instanceof \WP_Term ) {
+				$ids[] = $existing->term_id;
+				continue;
+			}
+
+			$inserted = wp_insert_term( $term, $taxonomy );
+
+			if ( $inserted instanceof \WP_Error ) {
+				\WP_CLI::error( $inserted->get_error_message() );
+			}
+
+			$ids[] = $inserted['term_id'];
+		}
+
+		return $ids;
 	}
 }
