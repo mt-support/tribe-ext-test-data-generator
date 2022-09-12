@@ -4,8 +4,8 @@ Donate link: http://evnt.is/29
 Tags: events, calendar
 Requires at least: 5.6
 Tested up to: 6.0
-Requires PHP: 7.1
-Stable tag: 1.0.8
+Requires PHP: 7.3
+Stable tag: 1.0.9
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,6 +32,11 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 Please create a GitHub issue inside the project.
 
 == Changelog ==
+
+= [1.0.9] 2022-09-12 =
+
+* Enhancement - Support comma-separated list of category and tag names in wp-cli.
+* Enhancement - Gracefully handle pre-existing category and tag names.
 
 = [1.0.8] 2022-06-29 =
 
