@@ -49,11 +49,11 @@ class Event {
 		$recurring_type = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
 		$event_category = array_merge(
 			(array)( $args['custom_category'] ?? [] ),
-			( $args['event_category'] ? Arr::list_to_array( $args['event_category'] ) : [] )
+			( isset( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [] )
 		);
 		$event_tag = array_merge(
 			(array)( $args['custom_tag'] ?? [] ),
-			( $args['event_tag'] ? Arr::list_to_array( $args['event_tag'] ) : [] )
+			( isset( $args['event_tag'] ) ? Arr::list_to_array( $args['event_tag'] ) : [] )
 		);
 		$events         = [];
 		$fast_occurrences_insert = $args['fastOccurrencesInsert'] ?? false;
