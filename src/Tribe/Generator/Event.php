@@ -48,12 +48,12 @@ class Event {
 		$is_recurring   = ! empty( $args['recurring'] );
 		$recurring_type = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
 		$event_category = array_merge(
-			(array)( $args['custom_category'] ?? [] ),
-			( $args['event_category'] ? Arr::list_to_array( $args['event_category'] ) : [] )
+			(array) ( ! empty( $args['custom_category'] ) ? $args['custom_category'] : [] ),
+			( ! empty( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [] )
 		);
 		$event_tag = array_merge(
-			(array)( $args['custom_tag'] ?? [] ),
-			( $args['event_tag'] ? Arr::list_to_array( $args['event_tag'] ) : [] )
+			(array) ( ! empty( $args['custom_tag'] ) ? $args['custom_tag'] : [] ),
+			( ! empty( $args['event_tag'] ) ? Arr::list_to_array( $args['event_tag'] ) : [] )
 		);
 		$events         = [];
 		$fast_occurrences_insert = $args['fastOccurrencesInsert'] ?? false;
@@ -443,10 +443,13 @@ class Event {
 		$faker           = Factory::create();
 		$venue           = tribe_venues()->by( 'ID', $venue_id )->first();
 		$venue_name      = empty( $venue ) ? 'The Venue' : $venue->post_title;
-		$venue_meta_city = get_post_meta( $venue_id ) ? get_post_meta( $venue_id )['_VenueCity'][0] : '';
-		$venue_city      = empty( $venue_meta_city ) ? 'your city' : $venue_meta_city;
-		$organizer       = tribe_organizers()->by( 'ID', $organizer_id )->first();
-		$organizer_name  = empty( $organizer ) ? 'a Premium Organizer' : $organizer->post_title;
+		$venue_meta_city = '';
+		if ( $venue_meta = get_post_meta( $venue_id ) ) {
+			$venue_meta_city = $venue_meta['_VenueCity'][0];
+		}
+		$venue_city     = empty( $venue_meta_city ) ? 'your city' : $venue_meta_city;
+		$organizer      = tribe_organizers()->by( 'ID', $organizer_id )->first();
+		$organizer_name = empty( $organizer ) ? 'a Premium Organizer' : $organizer->post_title;
 		gc_collect_cycles();
 
 		$description =
