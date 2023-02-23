@@ -445,7 +445,7 @@ class Event {
 		$venue_name      = empty( $venue ) ? 'The Venue' : $venue->post_title;
 		$venue_meta_city = '';
 		if ( $venue_meta = get_post_meta( $venue_id ) ) {
-			$venue_meta_city = $venue_meta['_VenueCity'][0];
+			$venue_meta_city = $venue_meta['_VenueCity'][0] ?? $venue_meta_city;
 		}
 		$venue_city     = empty( $venue_meta_city ) ? 'your city' : $venue_meta_city;
 		$organizer      = tribe_organizers()->by( 'ID', $organizer_id )->first();
