@@ -31,8 +31,8 @@ class Command {
 	 * @var array<string,string>
 	 */
 	protected $events_generator_translation_map = [
-		'from-date'               => 'fromDate',
-		'to-date'                 => 'toDate',
+		'from-date'               => 'from_date',
+		'to-date'                 => 'to_date',
 		'with-rsvp'               => 'rsvp',
 		'with-tickets'            => 'tickets',
 		'virtual'                 => 'virtual',
