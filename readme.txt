@@ -5,7 +5,7 @@ Tags: events, calendar
 Requires at least: 5.6
 Tested up to: 6.0
 Requires PHP: 7.3
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,6 +32,11 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 Please create a GitHub issue inside the project.
 
 == Changelog ==
+
+= [1.0.10] 2023-04-06 =
+
+* Fix - update `from_date` and `to_date` argument names in $args sent from Command to Event::create so that selected dates are honored.
+* Fix - update event category and tag declaration to prevent undefined array key PHP warnings.
 
 = [1.0.9] 2022-09-12 =
 
