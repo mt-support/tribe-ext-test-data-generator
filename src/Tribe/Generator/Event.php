@@ -47,14 +47,12 @@ class Event {
 		$is_virtual     = ! empty( $args['virtual'] );
 		$is_recurring   = ! empty( $args['recurring'] );
 		$recurring_type = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
-		$event_category = array_merge(
-			(array) ( ! empty( $args['custom_category'] ) ? $args['custom_category'] : [] ),
-			( ! empty( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [] )
-		);
-		$event_tag = array_merge(
-			(array) ( ! empty( $args['custom_tag'] ) ? $args['custom_tag'] : [] ),
-			( ! empty( $args['event_tag'] ) ? Arr::list_to_array( $args['event_tag'] ) : [] )
-		);
+		$custom_cat_arg = isset( $args['custom_category'] ) ? array($args['custom_category']) : [];
+		$event_cat_arg  = isset( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [];
+		$custom_tag_arg = isset( $args['custom_tag'] ) ? array($args['custom_tag']) : [];
+		$event_tag_arg  = isset( $args['event_tag'] ) ? Arr::list_to_array( $args['event_tag'] ) : [];
+		$event_category = array_merge( $custom_cat_arg, $event_cat_arg );
+		$event_tag      = array_merge( $custom_tag_arg, $event_tag_arg );
 		$events         = [];
 		$fast_occurrences_insert = $args['fastOccurrencesInsert'] ?? false;
 
