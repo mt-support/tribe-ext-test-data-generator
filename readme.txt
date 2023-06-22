@@ -5,7 +5,7 @@ Tags: events, calendar
 Requires at least: 5.6
 Tested up to: 6.0
 Requires PHP: 7.3
-Stable tag: 1.0.10
+Stable tag: 1.1.0
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
