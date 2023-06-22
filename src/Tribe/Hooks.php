@@ -20,7 +20,7 @@
  */
 
 namespace Tribe\Extensions\Test_Data_Generator;
-use Tribe__Settings;
+use TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class Hooks.
@@ -29,7 +29,7 @@ use Tribe__Settings;
  *
  * @package Tribe\Extensions\Test_Data_Generator;
  */
-class Hooks extends \tad_DI52_ServiceProvider {
+class Hooks extends Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.

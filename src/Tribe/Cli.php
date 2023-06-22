@@ -10,6 +10,7 @@
 namespace Tribe\Extensions\Test_Data_Generator;
 
 use Tribe\Extensions\Test_Data_Generator\Cli\Command;
+use TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class Cli
@@ -18,7 +19,7 @@ use Tribe\Extensions\Test_Data_Generator\Cli\Command;
  *
  * @package Tribe\Extensions\Test_Data_Generator
  */
-class Cli extends \tad_DI52_ServiceProvider {
+class Cli extends Service_Provider {
 
 	/**
 	 * Registers the filters, actions and bindings required to provide wp-cli support to the extension.
