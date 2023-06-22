@@ -32,10 +32,11 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 Please create a GitHub issue inside the project.
 
 == Changelog ==
+
 = [1.1.0] 2023-06-22 =
 
-* Version - Event Tickets 5.6.1 is only compatible with The Events Calendar 6.1.2 and higher.
-* Version - Event Tickets 5.6.1 is only compatible with Event Tickets 5.6.1 and higher.
+* Version - The Events Calendar Test Data Generator 1.1.0 is only compatible with The Events Calendar 6.1.2 and higher.
+* Version - The Events Calendar Test Data Generator 1.1.0 is only compatible with Event Tickets 5.6.1 and higher.
 * Fix - Lock our container usage(s) to the new Service_Provider contract in tribe-common. This prevents conflicts and potential fatals with other plugins that use a di52 container.
 
 = [1.0.10] 2023-04-06 =
