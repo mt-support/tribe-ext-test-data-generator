@@ -90,7 +90,6 @@ class Plugin extends Service_Provider {
 		$this->container->singleton( Page::class, Page::class, [ 'set_template' ] );
 
 		// End binds.
-
 		$this->container->register( Hooks::class );
 		$this->container->register( Assets::class );
 	}

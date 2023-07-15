@@ -65,6 +65,15 @@
             </td>
 		</tr>
         <tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
+            <td >
+                <label for="events_content_length">Content Length</label>
+            </td>
+            <td >
+                <input type="number" id='events_content_length' name='tribe-ext-test-data-generator[events][content_length]'
+                       placeholder="Number of characters..." style="width: 175px">
+            </td>
+        </tr>
+        <tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
             <td colspan="2">
                 <input type="checkbox" id='mark_featured' name='tribe-ext-test-data-generator[events][featured]'/>
                 <label for="mark_featured">Make them Featured events.</label>

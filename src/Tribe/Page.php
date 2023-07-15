@@ -1,5 +1,7 @@
 <?php
+
 namespace Tribe\Extensions\Test_Data_Generator;
+
 use Tribe__Settings;
 use Tribe__Template as Template;
 
@@ -34,11 +36,13 @@ class Page {
 		if ( empty( $this->template ) ) {
 			$this->set_template();
 		}
+
 		return $this->template;
 	}
 
 	/**
-	 * Normally ran when the class is setting up but configures the template instance that we will use render non v2 contents.
+	 * Normally ran when the class is setting up but configures the template instance that we will use render non v2
+	 * contents.
 	 *
 	 * @since 1.0.0
 	 *
@@ -63,6 +67,7 @@ class Page {
 
 	/**
 	 * Returns registered submenu slug.
+	 *
 	 * @since 1.0.0
 	 * @return string Registered submenu slug.
 	 */
@@ -72,6 +77,7 @@ class Page {
 
 	/**
 	 * Returns the registered submenu page hook.
+	 *
 	 * @since 1.0.0
 	 * @return string Registered submenu page hook.
 	 */
@@ -81,6 +87,7 @@ class Page {
 
 	/**
 	 * Add admin menu.
+	 *
 	 * @since 1.0.0
 	 */
 	public function add_menu() {
@@ -107,6 +114,7 @@ class Page {
 
 	/**
 	 * Render admin menu page.
+	 *
 	 * @since 1.0.0
 	 */
 	public function render() {
@@ -116,8 +124,10 @@ class Page {
 		$this->get_template()->template( 'page', $args );
 	}
 
+
+
 	/**
-	 *Parse POST request from Admin menu
+	 * Parse POST request from Admin menu
 	 *
 	 * @since 1.0.0
 	 */
@@ -126,7 +136,6 @@ class Page {
 			return;
 		}
 
-		$redirect_url = tribe_get_request_var( '_wp_http_referer', admin_url( 'edit.php?post_type=tribe_events&page=test-data-generator' ) );
 		$nonce = tribe_get_request_var( '_wpnonce' );
 		if ( ! wp_verify_nonce( $nonce, static::$nonce_action_key ) ) {
 			$redirect_url = add_query_arg( [ 'tribe_error' => 1 ] );
@@ -134,42 +143,34 @@ class Page {
 			exit;
 		}
 
-		$organizers = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'organizers' ], [] );
-		$venues = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'venues' ], [] );
-		$events = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'events' ], [] );
-		$images = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'uploads' ], [] );
-		$clear_generated = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clear_generated' ], [] );
-		$clear_all_events_data = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clear_events_data' ], [] );
-		$reset_tec_settings = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'reset_tec_settings' ], [] );
-		$created_organizers = $created_venues = $created_events = $created_images = $cleared_data = null;
-		if ( ! empty( $organizers['quantity'] ) ) {
-			$created_organizers = tribe( Generator\Organizer::class )->create( $organizers['quantity'], $organizers );
+		$params               = [];
+		$params['organizers'] = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'organizers' ], [] );
+		$params['venues']     = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'venues' ], [] );
+		$params['events']     = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'events' ], [] );
+		$params['uploads']    = tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'uploads' ], [] );
+
+		if ( tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clear_generated' ], null ) ) {
+			tribe( Generator\Utils::class )->clear_generated();
 		}
-		if ( ! empty( $venues['quantity'] ) ) {
-			$created_venues = tribe( Generator\Venue::class )->create( $venues['quantity'], $venues );
+		if ( tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'clear_events_data' ], null ) ) {
+			tribe( Generator\Utils::class )->clear_all();
 		}
-		if ( ! empty( $events['quantity'] ) ) {
-			$created_events = tribe( Generator\Event::class )->create( $events['quantity'], $events );
-		}
-		if ( ! empty( $images['quantity'] ) ) {
-			$created_images = tribe( Generator\Utils::class )->upload( $images['quantity'], $images );
-		}
-		if ( ! empty( $clear_generated ) ) {
-			$cleared_data = tribe ( Generator\Utils::class )->clear_generated( $clear_generated );
-		}
-		if ( ! empty( $clear_all_events_data ) ) {
-			$cleared_data = tribe ( Generator\Utils::class )->clear_all( $clear_all_events_data );
-		}
-		if ( ! empty( $reset_tec_settings ) ) {
-			$cleared_data = tribe ( Generator\Utils::class )->reset_tec_settings( $reset_tec_settings );
+		if ( tribe_get_request_var( [ 'tribe-ext-test-data-generator', 'reset_tec_settings' ], [] ) ) {
+			tribe( Generator\Utils::class )->reset_tec_settings();
 		}
 
-		if ( ! empty( $created_organizers || ! empty( $created_venues
-				|| ! empty( $created_events ) || ! empty( $created_images ) || ! empty( $cleared_data ) ) ) ) {
-			$redirect_url = add_query_arg( [ 'tribe_success' => 1 ] );
-			wp_redirect( $redirect_url );
-			exit;
-		}
+		/**
+		 * This will create a queue to generate any number of TEC entities.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $params Event, Organize, Venue and Image params.
+		 */
+		do_action( 'tec_ext_test_data_generator_handle_batch', $params );
+
+		$redirect_url = add_query_arg( [ 'tribe_success' => 1 ] );
+		wp_redirect( $redirect_url );
+		exit;
 	}
 
 	/**

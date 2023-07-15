@@ -352,12 +352,12 @@ class Command {
 	public function delete( array $args = [], array $assoc_args = [] ) {
 		$utils = new Utils();
 		if ( isset( $assoc_args['all'] ) ) {
-			$utils->clear_all( 'on' );
+			$utils->clear_all( );
 			\WP_CLI::success('Deleted all Events, Venues and Organizers from the site.');
 			return;
 		}
 
-		$utils->clear_generated( 'on' );
+		$utils->clear_generated();
 		\WP_CLI::success('Deleted all generated Events, Venues and Organizers from the site.');
 	}
 
@@ -374,7 +374,7 @@ class Command {
 	 */
 	public function reset() {
 		$utils = new Utils();
-		$utils->reset_tec_settings( 'on' );
+		$utils->reset_tec_settings( );
 
 		\WP_CLI::success(
 			'Deleted all saved options and settings for TEC, TEC Widgets and TEC-related transients from the db.'

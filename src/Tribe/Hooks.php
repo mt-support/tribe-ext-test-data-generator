@@ -21,6 +21,7 @@
 
 namespace Tribe\Extensions\Test_Data_Generator;
 use TEC\Common\Contracts\Service_Provider;
+use Tribe\Extensions\Test_Data_Generator\Generator\Handler;
 
 /**
  * Class Hooks.
@@ -45,6 +46,17 @@ class Hooks extends Service_Provider {
 	}
 
 	/**
+	 * Provider for TEC entity generation.
+	 *
+	 * @since TBD
+	 *
+	 * @param $params array<string,array> Generation params.
+	 */
+	public function handle_entities_generation( $params ) {
+		tribe( Handler::class )->handle_generation( $params );
+	}
+
+	/**
 	 * Adds the actions required by the plugin.
 	 *
 	 * @since 1.0.0
@@ -53,6 +65,8 @@ class Hooks extends Service_Provider {
 		add_action( 'tribe_load_text_domains', [ $this, 'load_text_domains' ] );
 		add_action( 'admin_menu', [ $this, 'action_add_menu' ], 15 );
 		add_action( 'admin_init', [ $this, 'on_admin_init' ], 15 );
+		add_action( 'tec_ext_test_data_generator_handle_batch', [ $this, 'handle_entities_generation' ] );
+
 		tribe_notice(
 			'tribe-ext-test-data-generator-success',
 			[
