@@ -22,6 +22,7 @@ class Organizer {
 	 * @return array<\WP_Post> An array of the generated Organizers post objects.
 	 */
 	public function create( $quantity = 1, array $args = [], callable $tick = null ) {
+		$organizers = [];
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$organizers[] = tribe_organizers()->set_args( $this->random_organizer_data() )->create();
 
