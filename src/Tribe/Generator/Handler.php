@@ -16,7 +16,6 @@ class Handler {
 	 * @return bool Flag whether any updates were made or not.
 	 */
 	public function handle_generation( $params ): bool {
-		// @todo Add a field to tweak this?
 		$batch_size      = 50;
 		$count_processed = 0;
 		$organizers      = $params['organizers'] ?? [];
@@ -72,7 +71,7 @@ class Handler {
 
 		// Do we have more to process?
 		if ( $count_processed >= $batch_size ) {
-			wp_schedule_single_event( time() + 2, 'tec_ext_test_data_generator_handle_batch', [
+			wp_schedule_single_event( time() + 5, 'tec_ext_test_data_generator_handle_batch', [
 				[
 					'organizers' => $organizers,
 					'venues'     => $venues,

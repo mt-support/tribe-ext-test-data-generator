@@ -41,20 +41,20 @@ class Event {
 	 *                                         creation.
 	 */
 	public function create( $quantity = 1, array $args = [], callable $tick = null ) {
-		$from_date      = ! empty( $args['from_date'] ) ? $args['from_date'] : '-1 month';
-		$to_date        = ! empty( $args['to_date'] ) ? $args['to_date'] : '+1 month';
-		$is_featured    = ! empty( $args['featured'] );
-		$is_virtual     = ! empty( $args['virtual'] );
-		$is_recurring   = ! empty( $args['recurring'] );
-		$recurring_type = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
-		$custom_cat_arg = isset( $args['custom_category'] ) ? array($args['custom_category']) : [];
-		$event_cat_arg  = isset( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [];
-		$custom_tag_arg = isset( $args['custom_tag'] ) ? array($args['custom_tag']) : [];
-		$event_tag_arg  = isset( $args['event_tag'] ) ? Arr::list_to_array( $args['event_tag'] ) : [];
-		$content_length =$args['content_length'] ??  null;
-		$event_category = array_merge( $custom_cat_arg, $event_cat_arg );
-		$event_tag      = array_merge( $custom_tag_arg, $event_tag_arg );
-		$events         = [];
+		$from_date               = ! empty( $args['from_date'] ) ? $args['from_date'] : '-1 month';
+		$to_date                 = ! empty( $args['to_date'] ) ? $args['to_date'] : '+1 month';
+		$is_featured             = ! empty( $args['featured'] );
+		$is_virtual              = ! empty( $args['virtual'] );
+		$is_recurring            = ! empty( $args['recurring'] );
+		$recurring_type          = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
+		$custom_cat_arg          = isset( $args['custom_category'] ) ? array( $args['custom_category'] ) : [];
+		$event_cat_arg           = isset( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [];
+		$custom_tag_arg          = isset( $args['custom_tag'] ) ? array( $args['custom_tag'] ) : [];
+		$event_tag_arg           = isset( $args['event_tag'] ) ? Arr::list_to_array( $args['event_tag'] ) : [];
+		$content_length          = ! empty( $args['content_length'] ) ? $args['content_length'] : null;
+		$event_category          = array_merge( $custom_cat_arg, $event_cat_arg );
+		$event_tag               = array_merge( $custom_tag_arg, $event_tag_arg );
+		$events                  = [];
 		$fast_occurrences_insert = $args['fastOccurrencesInsert'] ?? false;
 
 		for ( $i = 1; $i <= $quantity; $i++ ) {
