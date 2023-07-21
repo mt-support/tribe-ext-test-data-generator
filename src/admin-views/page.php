@@ -48,6 +48,10 @@
                     <span style="padding-right: 10px; padding-left: 5px">ℹ</span>
                     <em><strong>Server Time-out warning:</strong> the amount of Venues, Organizers and Events you can create are limited by this server's capabilities (available memory, processing power, etc.).<br/>Some Venues, Organizers and Events are going to be generated even if the request times out. If your request times out, just navigate "Back". Don't reload the page, otherwise the request will be re-sent.</em>
                 </p>
+                <p style="color: royalblue">
+                    <span style="padding-right: 10px; padding-left: 5px">ℹ</span>
+                    <em><strong>Batch processing.</strong> Note, the number of entries created will be batched at 50 per run. WP Cron will handle any above 50 in order to avoid timeouts and allow processing large datasets.</em>
+                </p>
             </td>
         </tr>
 		<tr class="tribe-dependent" data-depends="#num_events" data-condition-not="0" style="background-color: whitesmoke">
