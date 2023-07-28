@@ -71,14 +71,20 @@ class Handler {
 
 		// Do we have more to process?
 		if ( $count_processed >= $batch_size ) {
-			wp_schedule_single_event( time() + 5, 'tec_ext_test_data_generator_handle_batch', [
+			$params = [
 				[
 					'organizers' => $organizers,
 					'venues'     => $venues,
 					'events'     => $events,
 					'uploads'    => $uploads,
 				]
-			] );
+			];
+			// AS or WP Cron?
+			if ( function_exists( 'as_enqueue_async_action' ) ) {
+				as_enqueue_async_action( 'tec_ext_test_data_generator_handle_batch', $params );
+			} else {
+				wp_schedule_single_event( time() + 5, 'tec_ext_test_data_generator_handle_batch', );
+			}
 		}
 
 		return (bool) $did_something;
