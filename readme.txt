@@ -33,6 +33,11 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
+= [1.2.0] 2023-07-28 =
+
+* Feature - Through the interface, the generator will now batch entity creation into WP Cron events. It will process 50 entities per run.
+* Feature - Adding `Content Length` field to customize how large the post content is for Events being created. The default is to set around 200-300 characters of content. This is especially relevant for situations where we cache and serialize events with their content.
+
 = [1.1.0] 2023-06-22 =
 
 * Version - The Events Calendar Test Data Generator 1.1.0 is only compatible with The Events Calendar 6.1.2 and higher.
