@@ -162,7 +162,7 @@ class Page {
 		/**
 		 * This will create a queue to generate any number of TEC entities.
 		 *
-		 * @since TBD
+		 * @since 1.2.0
 		 *
 		 * @param array $params Event, Organize, Venue and Image params.
 		 */

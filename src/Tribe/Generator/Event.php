@@ -116,6 +116,7 @@ class Event {
 	 *
 	 * @param string $from_date
 	 * @param string $to_date
+	 * @param boolean $is_featured
 	 * @param boolean $is_virtual
 	 * @param boolean $is_recurring
 	 * @param string $recurring_type
@@ -125,7 +126,7 @@ class Event {
 	 *
 	 * @since 1.0.0
 	 * @since 1.0.5 Added Custom Event Category and Tag functionality
-	 * @since TBD Adding content length param.
+	 * @since 1.2.0 Adding content length param.
 	 *
 	 * @return string[]
 	 */
@@ -135,13 +136,13 @@ class Event {
 		$event_category, $event_tag,
 		$content_length
 	) {
-		$event_date = $this->generate_event_date_data( $from_date, $to_date );
-		$venue_id = $this->get_random_venue();
-		$organizer_id = $this->get_random_organizer();
-		$timezone = $this->determine_timezone($venue_id);
-		$event_title = $this->generate_event_title();
-		$event_description = $this->generate_event_description( $event_title, $organizer_id, $venue_id , $content_length);
-		$featured_image = $this->get_random_image_from_library();
+		$event_date        = $this->generate_event_date_data( $from_date, $to_date );
+		$venue_id          = $this->get_random_venue();
+		$organizer_id      = $this->get_random_organizer();
+		$timezone          = $this->determine_timezone( $venue_id );
+		$event_title       = $this->generate_event_title();
+		$event_description = $this->generate_event_description( $event_title, $organizer_id, $venue_id, $content_length );
+		$featured_image    = $this->get_random_image_from_library();
 		$cost = '';
 		$currency_symbol = '';
 		$currency_position = 'prefix';

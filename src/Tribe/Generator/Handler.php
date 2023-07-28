@@ -8,7 +8,7 @@ class Handler {
 	/**
 	 * Will process a batch of TEC entity generation, and queue any future batches still needed.
 	 *
-	 * @since TBD
+	 * @since 1.2.0
 	 *
 	 * @param $params array<string,array> Key value of entity information, such as `quantity` of a particular entity to
 	 *                create.

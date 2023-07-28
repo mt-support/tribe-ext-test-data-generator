@@ -48,7 +48,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Provider for TEC entity generation.
 	 *
-	 * @since TBD
+	 * @since 1.2.0
 	 *
 	 * @param $params array<string,array> Generation params.
 	 */
