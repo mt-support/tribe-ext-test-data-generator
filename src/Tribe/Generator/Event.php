@@ -41,24 +41,25 @@ class Event {
 	 *                                         creation.
 	 */
 	public function create( $quantity = 1, array $args = [], callable $tick = null ) {
-		$from_date      = ! empty( $args['from_date'] ) ? $args['from_date'] : '-1 month';
-		$to_date        = ! empty( $args['to_date'] ) ? $args['to_date'] : '+1 month';
-		$is_featured    = ! empty( $args['featured'] );
-		$is_virtual     = ! empty( $args['virtual'] );
-		$is_recurring   = ! empty( $args['recurring'] );
-		$recurring_type = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
-		$custom_cat_arg = isset( $args['custom_category'] ) ? array($args['custom_category']) : [];
-		$event_cat_arg  = isset( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [];
-		$custom_tag_arg = isset( $args['custom_tag'] ) ? array($args['custom_tag']) : [];
-		$event_tag_arg  = isset( $args['event_tag'] ) ? Arr::list_to_array( $args['event_tag'] ) : [];
-		$event_category = array_merge( $custom_cat_arg, $event_cat_arg );
-		$event_tag      = array_merge( $custom_tag_arg, $event_tag_arg );
-		$events         = [];
+		$from_date               = ! empty( $args['from_date'] ) ? $args['from_date'] : '-1 month';
+		$to_date                 = ! empty( $args['to_date'] ) ? $args['to_date'] : '+1 month';
+		$is_featured             = ! empty( $args['featured'] );
+		$is_virtual              = ! empty( $args['virtual'] );
+		$is_recurring            = ! empty( $args['recurring'] );
+		$recurring_type          = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
+		$custom_cat_arg          = isset( $args['custom_category'] ) ? array( $args['custom_category'] ) : [];
+		$event_cat_arg           = isset( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [];
+		$custom_tag_arg          = isset( $args['custom_tag'] ) ? array( $args['custom_tag'] ) : [];
+		$event_tag_arg           = isset( $args['event_tag'] ) ? Arr::list_to_array( $args['event_tag'] ) : [];
+		$content_length          = ! empty( $args['content_length'] ) ? $args['content_length'] : null;
+		$event_category          = array_merge( $custom_cat_arg, $event_cat_arg );
+		$event_tag               = array_merge( $custom_tag_arg, $event_tag_arg );
+		$events                  = [];
 		$fast_occurrences_insert = $args['fastOccurrencesInsert'] ?? false;
 
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$event_payload = $this->random_event_data( $from_date, $to_date, $is_featured, $is_virtual,
-				$is_recurring, $recurring_type, $event_category, $event_tag );
+				$is_recurring, $recurring_type, $event_category, $event_tag, $content_length );
 
 			global $wpdb;
 
@@ -115,27 +116,33 @@ class Event {
 	 *
 	 * @param string $from_date
 	 * @param string $to_date
+	 * @param boolean $is_featured
 	 * @param boolean $is_virtual
 	 * @param boolean $is_recurring
 	 * @param string $recurring_type
 	 * @param string $event_category
 	 * @param string $event_tag
+	 * @param null|int $content_length
+	 *
 	 * @since 1.0.0
 	 * @since 1.0.5 Added Custom Event Category and Tag functionality
+	 * @since 1.2.0 Adding content length param.
+	 *
 	 * @return string[]
 	 */
 	public function random_event_data(
 		$from_date, $to_date, $is_featured, $is_virtual,
 		$is_recurring, $recurring_type,
-		$event_category, $event_tag
+		$event_category, $event_tag,
+		$content_length
 	) {
-		$event_date = $this->generate_event_date_data( $from_date, $to_date );
-		$venue_id = $this->get_random_venue();
-		$organizer_id = $this->get_random_organizer();
-		$timezone = $this->determine_timezone($venue_id);
-		$event_title = $this->generate_event_title();
-		$event_description = $this->generate_event_description( $event_title, $organizer_id, $venue_id );
-		$featured_image = $this->get_random_image_from_library();
+		$event_date        = $this->generate_event_date_data( $from_date, $to_date );
+		$venue_id          = $this->get_random_venue();
+		$organizer_id      = $this->get_random_organizer();
+		$timezone          = $this->determine_timezone( $venue_id );
+		$event_title       = $this->generate_event_title();
+		$event_description = $this->generate_event_description( $event_title, $organizer_id, $venue_id, $content_length );
+		$featured_image    = $this->get_random_image_from_library();
 		$cost = '';
 		$currency_symbol = '';
 		$currency_position = 'prefix';
@@ -432,12 +439,15 @@ class Event {
 	 * Generate event description for WYSIWYG editor (post content).
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param $event_title
 	 * @param $organizer_id
 	 * @param $venue_id
+	 * @param null|int $content_length The number of chars the content will create. By default generates 200-300 char length.
+	 *
 	 * @return string
 	 */
-	public function generate_event_description( $event_title, $organizer_id, $venue_id ) {
+	public function generate_event_description( $event_title, $organizer_id, $venue_id, $content_length = null ) {
 		$faker           = Factory::create();
 		$venue           = tribe_venues()->by( 'ID', $venue_id )->first();
 		$venue_name      = empty( $venue ) ? 'The Venue' : $venue->post_title;
@@ -450,9 +460,17 @@ class Event {
 		$organizer_name = empty( $organizer ) ? 'a Premium Organizer' : $organizer->post_title;
 		gc_collect_cycles();
 
-		$description =
-			'<p>' . $venue_name . ' hosts ' . $event_title . ', an event by ' . $organizer_name . ' coming to '
-			. $venue_city . '! </p><p>' . $faker->realText( $faker->numberBetween( 200, 300 ) ) . '</p>';
+		$char_size = is_numeric( $content_length ) ? (int) $content_length : $faker->numberBetween( 200, 300 );
+		$content   = $char_size > 10 ? $faker->realText( $char_size ) : substr( str_shuffle( 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' ), 0, $content_length );
+
+		// If random, let's append stuff.
+		if ( ! is_numeric( $content_length ) ) {
+			$description =
+				'<p>' . $venue_name . ' hosts ' . $event_title . ', an event by ' . $organizer_name . ' coming to '
+				. $venue_city . '! </p><p>' . $content . '</p>';
+		} else {
+			$description = $content;
+		}
 
 		return $description;
 	}

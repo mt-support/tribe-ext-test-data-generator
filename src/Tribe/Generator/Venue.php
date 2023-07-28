@@ -22,6 +22,7 @@ class Venue {
 	 *
 	 */
 	public function create( $quantity = 1, array $args = [], callable  $tick = null ) {
+		$venues = [];
 		for ( $i = 1; $i <= $quantity; $i++ ) {
 			$venues[] = tribe_venues()->set_args( $this->random_venue_data() )->create();
 
