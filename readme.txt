@@ -33,6 +33,10 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
+= [1.2.1] TBD =
+
+* Feature - Adding feature to create All Day events.
+
 = [1.2.0] 2023-07-28 =
 
 * Feature - Through the interface, the generator will now batch entity creation into WP Cron or Action Scheduler events. It will process 50 entities per run.
