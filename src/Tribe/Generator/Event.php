@@ -46,6 +46,7 @@ class Event {
 		$is_featured             = ! empty( $args['featured'] );
 		$is_virtual              = ! empty( $args['virtual'] );
 		$is_recurring            = ! empty( $args['recurring'] );
+		$is_all_day              = tribe_is_truthy( $args['all_day'] );
 		$recurring_type          = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
 		$custom_cat_arg          = isset( $args['custom_category'] ) ? array( $args['custom_category'] ) : [];
 		$event_cat_arg           = isset( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [];
@@ -62,6 +63,9 @@ class Event {
 				$is_recurring, $recurring_type, $event_category, $event_tag, $content_length );
 
 			global $wpdb;
+
+			// Simple flags should be set directly.
+			$event_payload['all_day'] = $is_all_day ? 'yes' : 'no';
 
 			// Override the default Occurrence creation behavior with the fast one, if required.
 			if ( $fast_occurrences_insert && $this->is_post_transaction_supported() ) {
@@ -81,8 +85,8 @@ class Event {
 					$timezone = Timezones::build_timezone_object( $event_payload['timezone']
 					                                              ?? get_option( 'timezone_string' ) );
 
-					$real_duration = Dates::immutable( $event_payload['end_date'], $timezone )->getTimestamp()
-					                 - Dates::immutable( $event_payload['start_date'], $timezone )->getTimestamp();
+					$real_duration = Dates::immutable( $event_post->end_date, $timezone )->getTimestamp()
+					                 - Dates::immutable( $event_post->start_date, $timezone )->getTimestamp();
 					update_post_meta( $event_post->ID, '_EventDuration', $real_duration );
 				}
 
