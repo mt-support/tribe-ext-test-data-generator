@@ -46,7 +46,7 @@ class Event {
 		$is_featured             = ! empty( $args['featured'] );
 		$is_virtual              = ! empty( $args['virtual'] );
 		$is_recurring            = ! empty( $args['recurring'] );
-		$is_all_day              = tribe_is_truthy( $args['all_day'] );
+		$is_all_day              = ! empty( $args['all_day'] );
 		$recurring_type          = ( $is_recurring && ! empty( $args['recurring_type'] ) ) ? $args['recurring_type'] : 'all';
 		$custom_cat_arg          = isset( $args['custom_category'] ) ? array( $args['custom_category'] ) : [];
 		$event_cat_arg           = isset( $args['event_category'] ) ? Arr::list_to_array( $args['event_category'] ) : [];
