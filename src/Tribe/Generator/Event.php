@@ -93,11 +93,11 @@ class Event {
 				return $event_post;
 			} );
 
-			if( ! empty( $args['rsvp'] ) ) {
+			if ( ! empty( $args['rsvp'] ) ) {
 				$this->add_rsvp( $event );
 			}
 
-			if( ! empty( $args['ticket'] ) ) {
+			if ( ! empty( $args['tickets'] ) ) {
 				$this->add_ticket( $event );
 			}
 
