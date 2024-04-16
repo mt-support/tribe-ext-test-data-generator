@@ -46,7 +46,9 @@ class Venue {
 
 		$venue = $this->generate_venue_name();
 		$website = str_replace(' ', '', $venue);
-		$website = tribe_strtolower( $website ) . '-qa.evnt.is';
+		$website = str_replace("'", '', $website);
+		$website = str_replace(",", '', $website);
+		$website = 'https://' . tribe_strtolower( $website ) . '-qa.evnt.is';
 		$phone = $faker->phoneNumber;
 		$address = $this->generate_venue_address();
 		$description = $venue . ' is a multi-purpose space in ' . $address['city'] . ', ' . $address['state'] . ' with over ' . rand( 5,12 )
