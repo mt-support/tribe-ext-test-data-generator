@@ -2,10 +2,10 @@
 Contributors: theeventscalendar, aguseo, bordoni, Camwyn, lirianojoel, lucatume
 Donate link: http://evnt.is/29
 Tags: events, calendar
-Requires at least: 5.6
-Tested up to: 6.0
+Requires at least: 6.2
+Tested up to: 6.5.2
 Requires PHP: 7.3
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -33,9 +33,10 @@ Please create a GitHub issue inside the project.
 
 == Changelog ==
 
-= [1.2.1] TBD =
+= [1.2.1] 2024-04-16 =
 
 * Feature - Adding feature to create All Day events.
+* Tweak - Fixing Website URL generation for Venues.
 
 = [1.2.0] 2023-07-28 =
 
