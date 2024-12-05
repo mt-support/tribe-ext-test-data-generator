@@ -3,9 +3,9 @@ Contributors: theeventscalendar, aguseo, bordoni, Camwyn, lirianojoel, lucatume
 Donate link: http://evnt.is/29
 Tags: events, calendar
 Requires at least: 6.2
-Tested up to: 6.5.2
-Requires PHP: 7.3
-Stable tag: 1.2.1
+Tested up to: 6.7
+Requires PHP: 7.4
+Stable tag: 1.2.2
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,6 +32,10 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 Please create a GitHub issue inside the project.
 
 == Changelog ==
+
+= [1.2.2] 2024-12-05 =
+
+* Fix - Fixing Ticket generation
 
 = [1.2.1] 2024-04-16 =
 
